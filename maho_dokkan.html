@@ -269,22 +269,6 @@ main{position:relative;z-index:5;padding:24px 20px 60px;max-width:1400px;margin:
   border-radius:2px;cursor:pointer;display:flex;align-items:center;gap:4px;}
 .loc-tag::after{content:'×';opacity:.7;}
 
-.github-bar{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 14px;background:rgba(40,50,40,.4);
-  border-bottom:1px solid rgba(100,180,100,.2);
-  font-size:11px;color:rgba(245,234,214,.6);
-  position:relative;z-index:20;
-}
-.github-bar input{
-  flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(100,180,100,.3);
-  color:var(--parch);padding:4px 8px;border-radius:2px;
-  font-family:inherit;font-size:11px;outline:none;
-}
-.github-bar input:focus{border-color:rgba(100,180,100,.7)}
-.github-status{font-size:10px;white-space:nowrap;}
-.github-status.ok{color:#6ab46a}
-.github-status.err{color:#d97757}
 </style>
 </head>
 <body>
@@ -292,16 +276,21 @@ main{position:relative;z-index:5;padding:24px 20px 60px;max-width:1400px;margin:
   <div class="logo-title">마법전서</div>
   <div class="logo-sub">마법사가 되는방법 · 도감</div>
 </header>
-<div class="github-bar">
-  <span>☁️ GitHub 토큰:</span>
-  <input type="password" id="gh-token" placeholder="ghp_xxxxx (한 번만 입력하면 저장됨)"/>
-  <button class="filter-btn" id="gh-save-token" style="font-size:10px;padding:4px 10px">저장</button>
-  <span class="github-status" id="gh-status"></span>
-</div>
 <nav>
   <button class="nav-btn on" data-page="map">🗺 맵 & 채집</button>
   <button class="nav-btn" data-page="materials">🌿 마법재료</button>
   <button class="nav-btn" data-page="spells">✨ 마법레시피</button>
+  <div style="flex:1"></div>
+  <div style="display:flex;align-items:center;gap:6px;padding:0 14px">
+    <input type="password" id="gh-token" placeholder="GitHub 토큰"
+      style="background:rgba(255,255,255,.07);border:1px solid rgba(200,150,50,.3);
+      color:var(--parch);padding:4px 8px;border-radius:2px;font-size:11px;
+      outline:none;width:130px;font-family:inherit"/>
+    <button id="gh-save-token"
+      style="background:transparent;border:none;color:var(--gold);font-size:11px;
+      cursor:pointer;padding:0;font-family:inherit">저장</button>
+    <span id="gh-status" style="font-size:10px;color:#6ab46a;white-space:nowrap"></span>
+  </div>
 </nav>
 <main>
   <div class="page on" id="page-map">
