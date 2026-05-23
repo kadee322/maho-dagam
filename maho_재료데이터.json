@@ -353,9 +353,9 @@
   {
     "id": "볼멘트맘",
     "type": "꽃",
-    "effect": "정신안정",
-    "location": "",
-    "season": "연중",
+    "effect": "물리안정",
+    "location": "15",
+    "season": "땅, 풍, 물",
     "desc": "핑크색 꽃. 비교적 쉽게 발견.",
     "hint": ""
   },
