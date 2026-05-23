@@ -269,6 +269,63 @@ main{position:relative;z-index:5;padding:24px 20px 60px;max-width:1400px;margin:
   border-radius:2px;cursor:pointer;display:flex;align-items:center;gap:4px;}
 .loc-tag::after{content:'×';opacity:.7;}
 
+
+/* ── 맵 상세 새 레이아웃 ── */
+.map-detail-body{display:grid;grid-template-columns:4fr 6fr;gap:16px;align-items:start;}
+@media(max-width:900px){.map-detail-body{grid-template-columns:1fr}}
+
+/* 연결 맵 패널 */
+.map-connects-panel{background:rgba(245,234,214,.04);border:1px solid rgba(200,150,50,.15);border-radius:2px;padding:14px;}
+.map-connects-title{font-size:11px;color:var(--gold);letter-spacing:.1em;margin-bottom:10px;text-transform:uppercase;}
+.connect-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.connect-slot{
+  background:rgba(245,234,214,.06);border:1px solid rgba(200,150,50,.2);
+  border-radius:2px;padding:10px;text-align:center;min-height:64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  cursor:pointer;transition:all .15s;position:relative;
+}
+.connect-slot:hover{background:rgba(245,234,214,.12);border-color:var(--gold)}
+.connect-slot.empty{border-style:dashed;opacity:.5;cursor:default;}
+.connect-slot.filled{border-color:rgba(200,150,50,.4);}
+.connect-slot.filled:hover{border-color:var(--gold3);}
+.connect-dir{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.1em;}
+.connect-name{font-size:11px;color:var(--parch);line-height:1.3;}
+.connect-no{font-size:9px;color:var(--dim);margin-top:2px;}
+.connect-add{font-size:18px;color:rgba(200,150,50,.4);}
+.connect-del{position:absolute;top:4px;right:5px;font-size:11px;color:var(--dim);
+  background:none;border:none;cursor:pointer;padding:0;line-height:1;}
+.connect-del:hover{color:var(--red)}
+
+/* 채집 재료 카드 - 세로 정렬 */
+.map-mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;}
+.map-mat-item{
+  background:rgba(245,234,214,.07);border:1px solid rgba(200,150,50,.14);
+  border-radius:2px;padding:8px 6px;cursor:pointer;transition:all .15s;
+  display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;
+}
+.map-mat-item:hover{background:rgba(245,234,214,.13);border-color:var(--gold)}
+.map-mat-thumb{width:52px;height:52px;object-fit:contain;border-radius:1px;
+  background:rgba(245,234,214,.1);image-rendering:pixelated;}
+.map-mat-thumb-placeholder{width:52px;height:52px;display:flex;align-items:center;
+  justify-content:center;font-size:28px;background:rgba(245,234,214,.05);border-radius:1px;}
+.map-mat-name{font-size:10px;font-weight:700;color:var(--parch);line-height:1.3;}
+.map-mat-sub{font-size:9px;color:rgba(245,234,214,.4);}
+
+/* 연결 편집 모달 */
+.conn-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:150;
+  display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+.conn-modal-overlay.on{display:flex}
+.conn-box{background:var(--parch);border:2px solid var(--gold);border-radius:3px;
+  max-width:400px;width:100%;padding:22px;position:relative;}
+.conn-box h3{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;}
+.conn-search{width:100%;background:var(--parch2);border:1px solid var(--parch3);
+  color:var(--ink);padding:8px 10px;border-radius:2px;font-family:inherit;font-size:13px;outline:none;margin-bottom:8px;}
+.conn-search:focus{border-color:var(--gold)}
+.conn-results{max-height:200px;overflow-y:auto;border:1px solid var(--parch3);border-radius:2px;}
+.conn-result-item{padding:8px 12px;font-size:12px;color:var(--ink);cursor:pointer;
+  border-bottom:1px solid var(--parch3);display:flex;gap:8px;align-items:center;}
+.conn-result-item:hover{background:var(--parch2)}
+.conn-result-no{font-size:10px;color:var(--gold);min-width:20px;}
 </style>
 </head>
 <body>
@@ -391,11 +448,39 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
 });
 
 // 맵
+// 연결 편집 상태
+let editConnState = {no: null, dir: null};
+const DIRS = [{key:'north',label:'북'},{key:'east',label:'동'},{key:'south',label:'남'},{key:'west',label:'서'}];
+
+function getConnects(no) {
+  return AREAS[no]?.connects || {north:null,east:null,south:null,west:null};
+}
+function setConnects(no, connects) {
+  if(!AREAS[no]) return;
+  AREAS[no].connects = connects;
+  saveAreaConnects();
+}
+// AREAS connects를 localStorage에 저장
+function saveAreaConnects() {
+  const data = {};
+  Object.entries(AREAS).forEach(([no,a])=>{ if(a.connects) data[no]=a.connects; });
+  try { localStorage.setItem('maho_connects', JSON.stringify(data)); } catch(e){}
+}
+function loadAreaConnects() {
+  try {
+    const saved = localStorage.getItem('maho_connects');
+    if(!saved) return;
+    const data = JSON.parse(saved);
+    Object.entries(data).forEach(([no,connects])=>{
+      if(AREAS[no]) AREAS[no].connects = connects;
+    });
+  } catch(e){}
+}
+
 function renderMap(){
   const nav=document.getElementById('region-nav');
   const detail=document.getElementById('map-detail');
 
-  // 지역별 재료 집계 (번호 기준)
   const areaMatMap={};
   MAT.forEach(m=>{
     if(!m.location)return;
@@ -405,7 +490,6 @@ function renderMap(){
     });
   });
 
-  // 지역 목록: 섬 → 북쪽지방 → 동굴 순, 번호순
   const regionOrder=['섬','북쪽지방','동굴'];
   const sorted=Object.entries(AREAS).sort((a,b)=>+a[0]-(+b[0]));
 
@@ -428,33 +512,136 @@ function renderMap(){
     btn.onclick=()=>{
       nav.querySelectorAll('.region-btn').forEach(b=>b.classList.remove('on'));
       btn.classList.add('on');
-      const no=btn.dataset.no;
-      const area=AREAS[no];
-      const mats=areaMatMap[no]||[];
-      const connects=area.connects||[];
-      const connectHtml=connects.length
-        ?`<div style="font-size:11px;color:rgba(245,234,214,.5);margin-top:5px">
-          🔗 연결: ${connects.map(c=>AREAS[c]?`${c}. ${AREAS[c].name}`:c).join(' / ')}
-         </div>`:''
-      detail.innerHTML=`
-        <div class="map-detail-header">
-          <div class="map-region-name"><span style="opacity:.5;font-size:14px;margin-right:6px">${no}.</span>${area.name}</div>
-          <div style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(200,150,50,.2);color:var(--gold);margin-top:5px">${area.region}</div>
-          ${connectHtml}
-        </div>
-        ${mats.length?`
-        <div style="margin-bottom:10px;font-size:12px;color:var(--gold)">채집 가능 재료 (${mats.length}종)</div>
-        <div class="map-mat-grid">
-          ${mats.map(m=>`
-            <div class="map-mat-item" data-mat="${m.id}">
-              ${imgEl(m.id,'map-mat-thumb','')}
-              <div class="map-mat-info">
-                <div class="map-mat-name">${m.id}</div>
-                <div class="map-mat-sub">${m.effect}</div>
-              </div>
-            </div>`).join('')}
-        </div>`:`<div style="color:rgba(245,234,214,.3);font-size:12px;padding:20px 0">등록된 채집 재료 없음</div>`}`;
-      detail.querySelectorAll('.map-mat-item').forEach(el=>el.onclick=()=>showMatModal(el.dataset.mat));
+      renderMapDetail(btn.dataset.no, areaMatMap);
+    };
+  });
+}
+
+function renderMapDetail(no, areaMatMap) {
+  const detail = document.getElementById('map-detail');
+  if(!areaMatMap) {
+    // areaMatMap 재계산
+    areaMatMap = {};
+    MAT.forEach(m=>{
+      if(!m.location)return;
+      m.location.split(',').map(s=>s.trim()).forEach(loc=>{
+        if(!areaMatMap[loc])areaMatMap[loc]=[];
+        if(!areaMatMap[loc].find(x=>x.id===m.id)) areaMatMap[loc].push(m);
+      });
+    });
+  }
+  const area = AREAS[no];
+  const mats = areaMatMap[no]||[];
+  const connects = (typeof area.connects === 'object' && !Array.isArray(area.connects))
+    ? area.connects
+    : {north:null,east:null,south:null,west:null};
+
+  // 연결 슬롯 렌더
+  const connectSlots = DIRS.map(d=>{
+    const cno = connects[d.key];
+    const carea = cno ? AREAS[cno] : null;
+    if(carea) {
+      return `<div class="connect-slot filled" data-dir="${d.key}" data-no="${no}">
+        <button class="connect-del" data-dir="${d.key}" data-mapno="${no}">×</button>
+        <div class="connect-dir">${d.label}</div>
+        <div class="connect-name">${cno}. ${carea.name}</div>
+      </div>`;
+    } else {
+      return `<div class="connect-slot empty" data-dir="${d.key}" data-no="${no}">
+        <div class="connect-dir">${d.label}</div>
+        <div class="connect-add">+</div>
+      </div>`;
+    }
+  }).join('');
+
+  detail.innerHTML = `
+    <div class="map-detail-header">
+      <div class="map-region-name"><span style="opacity:.5;font-size:14px;margin-right:6px">${no}.</span>${area.name}</div>
+      <div style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(200,150,50,.2);color:var(--gold);margin-top:5px">${area.region}</div>
+    </div>
+    <div class="map-detail-body">
+      <div class="map-connects-panel">
+        <div class="map-connects-title">🔗 이어지는 맵</div>
+        <div class="connect-grid">${connectSlots}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--gold);margin-bottom:10px">🌿 채집 가능 재료 (${mats.length}종)</div>
+        ${mats.length?`<div class="map-mat-grid">
+          ${mats.map(m=>{
+            const src=getImg(m.id);
+            const imgHtml=src
+              ?`<img src="${src}" class="map-mat-thumb" loading="lazy"/>`
+              :`<div class="map-mat-thumb-placeholder">${getEmoji(m)}</div>`;
+            return `<div class="map-mat-item" data-mat="${m.id}">
+              ${imgHtml}
+              <div class="map-mat-name">${m.id}</div>
+              <div class="map-mat-sub">${m.effect}</div>
+            </div>`;
+          }).join('')}
+        </div>`:`<div style="color:rgba(245,234,214,.3);font-size:12px;padding:20px 0">등록된 채집 재료 없음</div>`}
+      </div>
+    </div>`;
+
+  // 빈 슬롯 클릭 → 연결 편집
+  detail.querySelectorAll('.connect-slot.empty').forEach(el=>{
+    el.onclick=()=>openConnModal(no, el.dataset.dir);
+  });
+  // 채워진 슬롯 클릭 → 해당 맵으로 이동
+  detail.querySelectorAll('.connect-slot.filled').forEach(el=>{
+    el.onclick=e=>{
+      if(e.target.classList.contains('connect-del')) return;
+      const cno = connects[el.dataset.dir];
+      if(cno) {
+        document.querySelectorAll('.region-btn').forEach(b=>{
+          b.classList.toggle('on', b.dataset.no===String(cno));
+        });
+        renderMapDetail(String(cno), null);
+      }
+    };
+  });
+  // 삭제 버튼
+  detail.querySelectorAll('.connect-del').forEach(btn=>{
+    btn.onclick=e=>{
+      e.stopPropagation();
+      const mapno=btn.dataset.mapno, dir=btn.dataset.dir;
+      const c = (typeof AREAS[mapno].connects === 'object' && !Array.isArray(AREAS[mapno].connects))
+        ? {...AREAS[mapno].connects} : {north:null,east:null,south:null,west:null};
+      c[dir] = null;
+      setConnects(mapno, c);
+      renderMapDetail(mapno, null);
+    };
+  });
+  detail.querySelectorAll('.map-mat-item').forEach(el=>el.onclick=()=>showMatModal(el.dataset.mat));
+}
+
+// 연결 편집 모달
+function openConnModal(no, dir) {
+  editConnState = {no, dir};
+  const dirLabel = DIRS.find(d=>d.key===dir)?.label || dir;
+  document.getElementById('conn-modal-title').textContent = `${no}. ${AREAS[no]?.name} — ${dirLabel}쪽 연결 맵`;
+  document.getElementById('conn-search').value = '';
+  renderConnResults('');
+  document.getElementById('conn-modal').classList.add('on');
+}
+function renderConnResults(q) {
+  const res = document.getElementById('conn-results');
+  const items = Object.entries(AREAS)
+    .filter(([n,a])=> !q || n.includes(q) || a.name.includes(q))
+    .sort((a,b)=>+a[0]-+b[0])
+    .slice(0,20);
+  res.innerHTML = items.map(([n,a])=>
+    `<div class="conn-result-item" data-no="${n}">
+      <span class="conn-result-no">${n}</span>${a.name}
+    </div>`).join('');
+  res.querySelectorAll('.conn-result-item').forEach(el=>{
+    el.onclick=()=>{
+      const {no,dir} = editConnState;
+      const c = (typeof AREAS[no]?.connects === 'object' && !Array.isArray(AREAS[no]?.connects))
+        ? {...AREAS[no].connects} : {north:null,east:null,south:null,west:null};
+      c[dir] = el.dataset.no;
+      setConnects(no, c);
+      document.getElementById('conn-modal').classList.remove('on');
+      renderMapDetail(no, null);
     };
   });
 }
@@ -903,7 +1090,23 @@ async function initLoad() {
   } catch(e) {
     if (hadSaved) showToast('✅ 저장된 데이터 불러옴');
   }
-  renderMap();renderMats();renderSpells();
+  
+// 연결 모달
+document.addEventListener('click', e=>{
+  if(e.target.id==='conn-close'||e.target.id==='conn-modal')
+    document.getElementById('conn-modal').classList.remove('on');
+});
+document.addEventListener('input', e=>{
+  if(e.target.id==='conn-search') renderConnResults(e.target.value.trim());
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') document.getElementById('conn-modal').classList.remove('on');
+});
+
+// 시작시 connects 로드
+loadAreaConnects();
+
+renderMap();renderMats();renderSpells();
 }
 initLoad();
 </script>
@@ -970,5 +1173,14 @@ initLoad();
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
+<div class="conn-modal-overlay" id="conn-modal">
+  <div class="conn-box">
+    <button class="modal-close" id="conn-close" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer;">×</button>
+    <h3 id="conn-modal-title">연결 맵 설정</h3>
+    <input class="conn-search" id="conn-search" placeholder="번호 또는 이름으로 검색…"/>
+    <div class="conn-results" id="conn-results"></div>
+  </div>
+</div>
 </body>
 </html>
