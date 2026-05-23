@@ -1180,11 +1180,11 @@
   },
   {
     "id": "퀄포암",
-    "type": "미분류",
-    "effect": "미확인",
-    "location": "",
-    "season": "연중",
-    "desc": "—",
+    "type": "꽃",
+    "effect": "환각",
+    "location": "32",
+    "season": "땅",
+    "desc": "동쪽에서 발견할 수 있는 기묘한 꽃.",
     "hint": ""
   },
   {
