@@ -608,6 +608,14 @@ function renderMapDetail(no, areaMatMap) {
         ? {...AREAS[mapno].connects} : {north:null,east:null,south:null,west:null};
       c[dir] = null;
       setConnects(mapno, c);
+      // 반대 방향 자동 해제
+      const oppDir2 = {north:'south',south:'north',east:'west',west:'east'}[dir];
+      const prevTarget = connects[dir];
+      if(prevTarget && AREAS[prevTarget]) {
+        const tc2 = (typeof AREAS[prevTarget].connects==='object'&&!Array.isArray(AREAS[prevTarget].connects))
+          ? {...AREAS[prevTarget].connects} : {north:null,east:null,south:null,west:null};
+        if(tc2[oppDir2]===mapno) { tc2[oppDir2]=null; setConnects(prevTarget, tc2); }
+      }
       renderMapDetail(mapno, null);
     };
   });
@@ -640,6 +648,15 @@ function renderConnResults(q) {
         ? {...AREAS[no].connects} : {north:null,east:null,south:null,west:null};
       c[dir] = el.dataset.no;
       setConnects(no, c);
+      // 반대 방향 자동 연결
+      const oppDir = {north:'south',south:'north',east:'west',west:'east'}[dir];
+      const targetNo = el.dataset.no;
+      if(AREAS[targetNo]) {
+        const tc = (typeof AREAS[targetNo].connects==='object'&&!Array.isArray(AREAS[targetNo].connects))
+          ? {...AREAS[targetNo].connects} : {north:null,east:null,south:null,west:null};
+        tc[oppDir] = no;
+        setConnects(targetNo, tc);
+      }
       document.getElementById('conn-modal').classList.remove('on');
       renderMapDetail(no, null);
     };
