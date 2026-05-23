@@ -92,8 +92,8 @@
   {
     "id": "렌니스도터르",
     "type": "광물",
-    "effect": "중화안정",
-    "location": "",
+    "effect": "정신안정",
+    "location": "65",
     "season": "연중",
     "desc": "남쪽 바다 근처에서 채집.",
     "hint": ""
