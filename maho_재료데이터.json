@@ -344,9 +344,9 @@
   {
     "id": "모스트아로맘",
     "type": "꽃",
-    "effect": "중화안정",
-    "location": "",
-    "season": "연중",
+    "effect": "환각",
+    "location": "11",
+    "season": "풍",
     "desc": "고지 희귀 꽃. 꽃가루가 재료. 독 주의.",
     "hint": ""
   },
