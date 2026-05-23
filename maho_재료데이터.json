@@ -65,8 +65,8 @@
   {
     "id": "큰시도터르",
     "type": "광물",
-    "effect": "변이혼돈",
-    "location": "",
+    "effect": "환각",
+    "location": "64",
     "season": "연중",
     "desc": "파란 과석질 광물. 표면을 깎아서 사용.",
     "hint": ""
