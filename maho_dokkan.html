@@ -453,14 +453,23 @@ let editConnState = {no: null, dir: null};
 const DIRS = [{key:'north',label:'북'},{key:'east',label:'동'},{key:'south',label:'남'},{key:'west',label:'서'}];
 
 function getConnects(no) {
-  return AREAS[no]?.connects || {north:null,east:null,south:null,west:null};
+  const c = AREAS[no]?.connects;
+  if(!c) return {north:[],east:[],south:[],west:[]};
+  // 구버전 호환 (string → array)
+  const result = {};
+  DIRS.forEach(d=>{
+    const v = c[d.key];
+    if(Array.isArray(v)) result[d.key] = v;
+    else if(v) result[d.key] = [v];
+    else result[d.key] = [];
+  });
+  return result;
 }
 function setConnects(no, connects) {
   if(!AREAS[no]) return;
   AREAS[no].connects = connects;
   saveAreaConnects();
 }
-// AREAS connects를 localStorage에 저장
 function saveAreaConnects() { saveToLocal(); }
 function loadAreaConnects() { /* loadFromLocal에서 처리 */ }
 
@@ -507,7 +516,6 @@ function renderMap(){
 function renderMapDetail(no, areaMatMap) {
   const detail = document.getElementById('map-detail');
   if(!areaMatMap) {
-    // areaMatMap 재계산
     areaMatMap = {};
     MAT.forEach(m=>{
       if(!m.location)return;
@@ -519,26 +527,30 @@ function renderMapDetail(no, areaMatMap) {
   }
   const area = AREAS[no];
   const mats = areaMatMap[no]||[];
-  const connects = (typeof area.connects === 'object' && !Array.isArray(area.connects))
-    ? area.connects
-    : {north:null,east:null,south:null,west:null};
+  const connects = getConnects(no);
 
-  // 연결 슬롯 렌더
+  // 연결 슬롯 렌더 (방향당 최대 2개)
   const connectSlots = DIRS.map(d=>{
-    const cno = connects[d.key];
-    const carea = cno ? AREAS[cno] : null;
-    if(carea) {
-      return `<div class="connect-slot filled" data-dir="${d.key}" data-no="${no}">
-        <button class="connect-del" data-dir="${d.key}" data-mapno="${no}">×</button>
+    const list = connects[d.key]||[];
+    const slots = [];
+    // 기존 연결들
+    list.forEach(cno=>{
+      const carea = AREAS[cno];
+      if(!carea) return;
+      slots.push(`<div class="connect-slot filled" style="margin-bottom:5px">
+        <button class="connect-del" data-dir="${d.key}" data-mapno="${no}" data-target="${cno}">×</button>
         <div class="connect-dir">${d.label}</div>
         <div class="connect-name">${cno}. ${carea.name}</div>
-      </div>`;
-    } else {
-      return `<div class="connect-slot empty" data-dir="${d.key}" data-no="${no}">
+      </div>`);
+    });
+    // 추가 슬롯 (최대 2개)
+    if(list.length < 2) {
+      slots.push(`<div class="connect-slot empty" data-dir="${d.key}" data-no="${no}">
         <div class="connect-dir">${d.label}</div>
         <div class="connect-add">+</div>
-      </div>`;
+      </div>`);
     }
+    return `<div style="display:flex;flex-direction:column">${slots.join('')}</div>`;
   }).join('');
 
   detail.innerHTML = `
@@ -569,7 +581,7 @@ function renderMapDetail(no, areaMatMap) {
       </div>
     </div>`;
 
-  // 빈 슬롯 클릭 → 연결 편집
+  // 빈 슬롯 → 연결 추가
   detail.querySelectorAll('.connect-slot.empty').forEach(el=>{
     el.onclick=()=>openConnModal(no, el.dataset.dir);
   });
@@ -577,8 +589,8 @@ function renderMapDetail(no, areaMatMap) {
   detail.querySelectorAll('.connect-slot.filled').forEach(el=>{
     el.onclick=e=>{
       if(e.target.classList.contains('connect-del')) return;
-      const cno = connects[el.dataset.dir];
-      if(cno) {
+      const cno = el.querySelector('.connect-name').textContent.split('.')[0].trim();
+      if(cno && AREAS[cno]) {
         document.querySelectorAll('.region-btn').forEach(b=>{
           b.classList.toggle('on', b.dataset.no===String(cno));
         });
@@ -586,22 +598,20 @@ function renderMapDetail(no, areaMatMap) {
       }
     };
   });
-  // 삭제 버튼
+  // 삭제
   detail.querySelectorAll('.connect-del').forEach(btn=>{
     btn.onclick=e=>{
       e.stopPropagation();
-      const mapno=btn.dataset.mapno, dir=btn.dataset.dir;
-      const c = (typeof AREAS[mapno].connects === 'object' && !Array.isArray(AREAS[mapno].connects))
-        ? {...AREAS[mapno].connects} : {north:null,east:null,south:null,west:null};
-      c[dir] = null;
+      const mapno=btn.dataset.mapno, dir=btn.dataset.dir, target=btn.dataset.target;
+      const c = getConnects(mapno);
+      c[dir] = c[dir].filter(n=>n!==target);
       setConnects(mapno, c);
       // 반대 방향 자동 해제
-      const oppDir2 = {north:'south',south:'north',east:'west',west:'east'}[dir];
-      const prevTarget = connects[dir];
-      if(prevTarget && AREAS[prevTarget]) {
-        const tc2 = (typeof AREAS[prevTarget].connects==='object'&&!Array.isArray(AREAS[prevTarget].connects))
-          ? {...AREAS[prevTarget].connects} : {north:null,east:null,south:null,west:null};
-        if(tc2[oppDir2]===mapno) { tc2[oppDir2]=null; setConnects(prevTarget, tc2); }
+      const oppDir = {north:'south',south:'north',east:'west',west:'east'}[dir];
+      if(AREAS[target]) {
+        const tc = getConnects(target);
+        tc[oppDir] = tc[oppDir].filter(n=>n!==mapno);
+        setConnects(target, tc);
       }
       renderMapDetail(mapno, null);
     };
@@ -613,7 +623,7 @@ function renderMapDetail(no, areaMatMap) {
 function openConnModal(no, dir) {
   editConnState = {no, dir};
   const dirLabel = DIRS.find(d=>d.key===dir)?.label || dir;
-  document.getElementById('conn-modal-title').textContent = `${no}. ${AREAS[no]?.name} — ${dirLabel}쪽 연결 맵`;
+  document.getElementById('conn-modal-title').textContent = `${no}. ${AREAS[no]?.name} — ${dirLabel}쪽 연결 추가`;
   document.getElementById('conn-search').value = '';
   renderConnResults('');
   document.getElementById('conn-modal').classList.add('on');
@@ -631,489 +641,25 @@ function renderConnResults(q) {
   res.querySelectorAll('.conn-result-item').forEach(el=>{
     el.onclick=()=>{
       const {no,dir} = editConnState;
-      const c = (typeof AREAS[no]?.connects === 'object' && !Array.isArray(AREAS[no]?.connects))
-        ? {...AREAS[no].connects} : {north:null,east:null,south:null,west:null};
-      c[dir] = el.dataset.no;
-      setConnects(no, c);
-      // 반대 방향 자동 연결
-      const oppDir = {north:'south',south:'north',east:'west',west:'east'}[dir];
-      const targetNo = el.dataset.no;
-      if(AREAS[targetNo]) {
-        const tc = (typeof AREAS[targetNo].connects==='object'&&!Array.isArray(AREAS[targetNo].connects))
-          ? {...AREAS[targetNo].connects} : {north:null,east:null,south:null,west:null};
-        tc[oppDir] = no;
-        setConnects(targetNo, tc);
+      const c = getConnects(no);
+      if(!c[dir].includes(el.dataset.no) && c[dir].length < 2) {
+        c[dir].push(el.dataset.no);
+        setConnects(no, c);
+        // 반대 방향 자동 연결
+        const oppDir = {north:'south',south:'north',east:'west',west:'east'}[dir];
+        if(AREAS[el.dataset.no]) {
+          const tc = getConnects(el.dataset.no);
+          if(!tc[oppDir].includes(no) && tc[oppDir].length < 2) {
+            tc[oppDir].push(no);
+            setConnects(el.dataset.no, tc);
+          }
+        }
       }
       document.getElementById('conn-modal').classList.remove('on');
       renderMapDetail(no, null);
     };
   });
 }
-
-// 재료 그리드
-let matF={q:'',effect:'',sort:'alpha'};
-function renderMats(){
-  const grid=document.getElementById('mat-grid');
-  let list=MAT.filter((m,i,a)=>a.findIndex(x=>x.id===m.id)===i);
-  if(matF.q)list=list.filter(m=>m.id.includes(matF.q)||(m.desc&&m.desc.includes(matF.q))||m.location.includes(matF.q));
-  if(matF.effect)list=list.filter(m=>m.effect===matF.effect);
-  if(matF.sort==='alpha')list.sort((a,b)=>a.id.localeCompare(b.id,'ko'));
-  if(!list.length){grid.innerHTML='<div class="no-result">검색 결과 없음</div>';return;}
-  grid.innerHTML=list.map((m,i)=>{
-    const src=getImg(m.id);
-    const imgHtml=src
-      ?`<img src="${src}" class="mat-img" loading="lazy"/>`
-      :`<div class="mat-img-placeholder">${getEmoji(m)}</div>`;
-    const descText=m.desc&&m.desc!=='—'?`<div class="mat-desc" style="font-size:11px;color:var(--ink3);margin-top:5px;line-height:1.5;overflow:hidden;max-height:calc(1.5em * 2);line-height:1.5">${m.desc}</div>`:'';
-    return `<div class="mat-card" data-mat="${m.id}">
-      <div class="mat-img-wrap" style="background:${EFFECT_BG[m.effect]||'#2a2a2a'}22">
-        <div class="mat-no">${String(i+1).padStart(3,'0')}</div>
-        ${imgHtml}
-      </div>
-      <div class="mat-card-body">
-        <div class="mat-name">${m.id}</div>
-        <div class="mat-tags">
-          <span class="tag tag-effect-${m.effect}">${m.effect}</span>
-          <span class="tag tag-type">${m.type}</span>
-          ${m.season&&m.season!=='연중'?`<span class="tag" style="background:rgba(42,31,14,.12);color:var(--ink2)">${m.season}</span>`:''}
-        </div>
-        <div class="mat-loc">${m.location.split(',').map(s=>s.trim()).map(no=>AREAS[no]?no+'. '+AREAS[no].name:no).join(', ')}</div>
-        ${m.hint?('<div style="font-size:10px;color:var(--gold);margin-top:4px;overflow:hidden;max-height:calc(1.5em * 2);line-height:1.5">💡 '+m.hint+'</div>'):''}
-        ${descText}
-      </div>
-    </div>`;
-  }).join('');
-  grid.querySelectorAll('.mat-card').forEach(el=>el.onclick=()=>showMatModal(el.dataset.mat));
-}
-document.addEventListener('input', e => {
-  if (e.target.id === 'mat-search')   { matF.q=e.target.value.trim();   renderMats(); }
-  if (e.target.id === 'spell-search') { spF.q=e.target.value.trim(); renderSpells(); }
-});
-document.querySelectorAll('[data-effect]').forEach(btn=>{
-  btn.onclick=()=>{document.querySelectorAll('[data-effect]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');matF.effect=btn.dataset.effect;renderMats();};
-});
-
-// 마법 그리드
-let spF={q:'',cat:''};
-function renderSpells(){
-  const grid=document.getElementById('spell-grid');
-  let list=SPELLS;
-  if(spF.q)list=list.filter(s=>s.name.includes(spF.q)||s.effect.includes(spF.q)||s.recipe.some(r=>r[0].includes(spF.q)));
-  if(spF.cat)list=list.filter(s=>s.category===spF.cat);
-  if(!list.length){grid.innerHTML='<div class="no-result">검색 결과 없음</div>';return;}
-  grid.innerHTML=list.map(s=>`
-    <div class="spell-card" data-spell="${s.name}">
-      <div class="spell-name">${s.name}</div>
-      <span class="spell-cat cat-${s.category}">${s.category}</span>
-      <div class="spell-effect">${s.effect}</div>
-      <div class="recipe-list">
-        ${s.recipe.map((r,i)=>`
-          <div class="recipe-item" data-mat="${r[0]}">
-            <div class="recipe-num">${i+1}</div>
-
-            <div class="recipe-mat">${r[0]}</div>
-            <div class="recipe-how">${r[1]}</div>
-          </div>`).join('')}
-      </div>
-    </div>`).join('');
-  grid.querySelectorAll('.spell-card').forEach(el=>el.onclick=()=>showSpellModal(el.dataset.spell));
-  grid.querySelectorAll('.recipe-item').forEach(el=>{
-    el.onclick=e=>{e.stopPropagation();showMatModal(el.dataset.mat);};
-  });
-}
-
-document.querySelectorAll('[data-cat]').forEach(btn=>{
-  btn.onclick=()=>{document.querySelectorAll('[data-cat]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');spF.cat=btn.dataset.cat;renderSpells();};
-});
-
-// 모달: 재료
-function showMatModal(name){
-  const m=MAT.find(x=>x.id===name);if(!m)return;
-  const src=getImg(name);
-  const spells=SPELLS.filter(s=>s.recipe.some(r=>r[0]===name));
-  const imgHtml=src
-    ?`<img src="${src}"/>`
-    :`<div class="placeholder">${getEmoji(m)}</div>`;
-  document.getElementById('modal-content').innerHTML=`
-    <div class="modal-img-frame">${imgHtml}</div>
-    <div class="modal-title">${m.id}</div>
-    <div class="modal-sub">${m.type} · ${m.season}</div>
-    <div class="modal-tags">
-      <span class="tag tag-effect-${m.effect}">${m.effect}효과</span>
-      <span class="tag tag-type">${m.type}</span>
-    </div>
-    <div class="modal-section"><h4>설명</h4><p>${m.desc}</p></div>
-    ${m.hint?('<div class="modal-section"><h4>채집 힌트</h4><p style="color:var(--gold)">💡 '+m.hint+'</p></div>'):''}
-    <div class="modal-section"><h4>채집 장소</h4><p>${m.location?m.location.split(',').map(s=>s.trim()).map(no=>AREAS[no]?'📍 '+no+'. '+AREAS[no].name:'📍 '+no).join('<br>'):'미등록'}</p></div>
-    ${spells.length?`<div class="divider"></div>
-    <div class="modal-section"><h4>사용 마법 (${spells.length}개)</h4>
-    <div class="related-list">${spells.map(s=>`
-      <div class="related-item" data-spell="${s.name}">
-        <span class="spell-cat cat-${s.category}" style="margin-right:7px;11px">${s.category}</span>
-        <b>${s.name}</b> — ${s.effect}
-      </div>`).join('')}</div></div>`:''}`;
-  document.getElementById('modal-content').innerHTML+=`<button class="btn-edit" onclick="openEditModal('${name}')">✏️ 정보 수정</button>`;
-  document.getElementById('modal').classList.add('on');
-  document.querySelectorAll('[data-spell]').forEach(el=>el.onclick=()=>showSpellModal(el.dataset.spell));
-}
-
-// 모달: 마법
-function showSpellModal(name){
-  const s=SPELLS.find(x=>x.name===name);if(!s)return;
-  document.getElementById('modal-content').innerHTML=`
-    <div class="modal-title">✨ ${s.name}</div>
-    <div class="modal-sub">${s.category} 마법</div>
-    <div class="modal-tags"><span class="spell-cat cat-${s.category}">${s.category}</span></div>
-    <div class="modal-section"><h4>효과</h4><p>${s.effect}</p></div>
-    <div class="divider"></div>
-    <div class="modal-section"><h4>조합 레시피 (순서대로)</h4>
-    <div class="recipe-list" style="margin-top:8px">
-      ${s.recipe.map((r,i)=>`
-        <div class="recipe-item" data-mat="${r[0]}">
-          <div class="recipe-num">${i+1}</div>
-          ${imgEl(r[0],'recipe-thumb','')}
-          <div class="recipe-mat">${r[0]}</div>
-          <div class="recipe-how">${r[1]}</div>
-        </div>`).join('')}
-    </div></div>`;
-  document.getElementById('modal').classList.add('on');
-  document.querySelectorAll('[data-mat]').forEach(el=>el.onclick=e=>{e.stopPropagation();showMatModal(el.dataset.mat);});
-}
-
-// modal 닫기 이벤트 위임
-document.addEventListener('click', e => {
-  if (e.target.id==='modal-close') document.getElementById('modal').classList.remove('on');
-  if (e.target.id==='modal')       document.getElementById('modal').classList.remove('on');
-});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('modal').classList.remove('on');});
-
-
-// 효과 드롭박스
-// 드롭박스 - 동적 이벤트 (숨겨진 탭 null 방지)
-document.addEventListener('change', e => {
-  if (e.target.id === 'mat-effect-sel') { matF.effect=e.target.value; renderMats(); }
-  if (e.target.id === 'mat-sort-sel')   { matF.sort=e.target.value;   renderMats(); }
-  if (e.target.id === 'mat-search')     { matF.q=e.target.value.trim(); renderMats(); }
-  if (e.target.id === 'spell-search')   { spF.q=e.target.value.trim(); renderSpells(); }
-  if (e.target.id === 'import-file') {
-    if (e.target.files[0]) importJSON(e.target.files[0]);
-    e.target.value = '';
-  }
-});
-
-// 수정 모달
-function openEditModal(matId){
-  const m=MAT.find(x=>x.id===matId);if(!m)return;
-  document.getElementById('edit-title').textContent=m.id+' 수정';
-  document.getElementById('edit-id').value=matId;
-  document.getElementById('edit-name').value=m.id;
-  document.getElementById('edit-type').value=m.type||'';
-  document.getElementById('edit-effect').value=m.effect||'미확인';
-  document.getElementById('edit-location').value='';
-  document.getElementById('edit-season').value=m.season||'';
-  document.getElementById('edit-hint').value=m.hint||'';
-  document.getElementById('edit-desc').value=m.desc||'';
-  // 기존 채집장소 태그 복원
-  locSelected=(m.location||'').split(',').map(s=>s.trim()).filter(s=>s&&AREAS[s]);
-  renderLocTags();
-  document.getElementById('edit-modal').classList.add('on');
-}
-// edit-modal 이벤트 위임
-document.addEventListener('click', e => {
-  if (e.target.id==='edit-close' || e.target.id==='edit-cancel') {
-    document.getElementById('edit-modal').classList.remove('on');
-  }
-  if (e.target.id==='edit-modal') {
-    document.getElementById('edit-modal').classList.remove('on');
-  }
-  if (e.target.id==='edit-save') {
-    const oldId=document.getElementById('edit-id').value;
-    const m=MAT.find(x=>x.id===oldId);if(!m)return;
-    m.id=document.getElementById('edit-name').value.trim()||m.id;
-    m.type=document.getElementById('edit-type').value.trim();
-    m.effect=document.getElementById('edit-effect').value;
-    m.location=locSelected.join(',');
-    m.season=document.getElementById('edit-season').value.trim();
-    m.hint=document.getElementById('edit-hint').value.trim();
-    m.desc=document.getElementById('edit-desc').value.trim();
-    document.getElementById('edit-modal').classList.remove('on');
-    document.getElementById('modal').classList.remove('on');
-    saveToLocal();
-    saveToGitHub();
-    showToast('✅ 저장됨');
-    renderMats();renderMap();
-    setTimeout(()=>showMatModal(m.id),100);
-  }
-});
-
-const STORAGE_KEY = 'maho_mat_edits_v1';
-
-// localStorage에 수정 내용 저장
-function saveToLocal() {
-  // 원본 데이터와 다른 것만 저장 (변경된 항목의 id → 전체 객체)
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({materials:MAT, connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))}));
-  } catch(e) { console.warn('localStorage 저장 실패', e); }
-}
-
-// localStorage에서 불러와서 MAT 덮어쓰기
-function loadFromLocal() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return false;
-    const parsed = JSON.parse(saved);
-    const matList = Array.isArray(parsed) ? parsed : (parsed.materials || []);
-    matList.forEach(savedM => {
-      const idx = MAT.findIndex(m => m.id === savedM.id);
-      if (idx >= 0) Object.assign(MAT[idx], savedM);
-      else MAT.push(savedM);
-    });
-    // connects 복원
-    if(parsed.connects) {
-      Object.entries(parsed.connects).forEach(([no,c])=>{
-        if(AREAS[no] && c) AREAS[no].connects = c;
-      });
-    }
-    return true;
-  } catch(e) { return false; }
-}
-
-// JSON 파일로 내보내기
-function exportJSON() {
-  const exportData = {materials:MAT, connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))};
-  const blob = new Blob([JSON.stringify(exportData, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'maho_재료데이터.json';
-  a.click();
-  showToast('💾 데이터 저장 완료!');
-}
-
-// 수정 시 자동 저장 (조용히)
-function autoExportJSON() {
-  const blob = new Blob([JSON.stringify(MAT, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'maho_재료데이터.json';
-  a.click();
-}
-
-// JSON 파일 불러오기
-function importJSON(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const raw = JSON.parse(e.target.result);
-      // {materials:[...]} 형태와 [...] 배열 형태 둘 다 지원
-      const list = Array.isArray(raw) ? raw : (raw.materials || []);
-      if (!list.length) { showToast('❌ 재료 데이터가 없어요'); return; }
-      list.forEach(savedM => {
-        const idx = MAT.findIndex(m => m.id === savedM.id);
-        if (idx >= 0) Object.assign(MAT[idx], savedM);
-        else MAT.push(savedM);
-      });
-      if(raw.connects) {
-        Object.entries(raw.connects).forEach(([no,c])=>{
-          if(AREAS[no] && c) AREAS[no].connects = c;
-        });
-      }
-      saveToLocal();
-      renderMats(); renderMap();
-      showToast('📂 ' + list.length + '개 재료 데이터 불러오기 완료!');
-    } catch(e) { showToast('❌ 파일 형식 오류'); }
-  };
-  reader.readAsText(file);
-}
-
-// 토스트 메시지
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  if(!t) return;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// 버튼은 클릭 시점에 동적으로 이벤트 등록 (페이지 숨김 상태에서 null 방지)
-document.addEventListener('click', e => {
-  if (e.target.id === 'btn-export') exportJSON();
-  if (e.target.id === 'btn-import') {
-    const fi = document.getElementById('import-file');
-    if (fi) fi.click();
-  }
-});
-document.addEventListener('change', e => {
-  if (e.target.id === 'import-file') {
-    if (e.target.files[0]) importJSON(e.target.files[0]);
-    e.target.value = '';
-  }
-});
-
-
-// GitHub 설정
-const GH_USER = 'kadee322';
-const GH_REPO = 'maho-dagam';
-const GH_FILE = 'maho_재료데이터.json';
-const GH_TOKEN_KEY = 'maho_gh_token';
-
-function getToken() { return localStorage.getItem(GH_TOKEN_KEY)||''; }
-
-// 토큰 저장 버튼
-document.addEventListener('click', e => {
-  if (e.target.id === 'gh-save-token') {
-    const t = document.getElementById('gh-token').value.trim();
-    if (!t) return;
-    localStorage.setItem(GH_TOKEN_KEY, t);
-    document.getElementById('gh-input-wrap').style.display='none';
-    document.getElementById('gh-status').textContent = '☁️';
-    document.getElementById('gh-status').title = '클릭하면 토큰 재입력';
-  }
-});
-
-// 페이지 로드시 토큰 있으면 표시
-window.addEventListener('load', ()=>{
-  if(getToken()) {
-    document.getElementById('gh-input-wrap').style.display='none';
-    document.getElementById('gh-status').textContent = '☁️';
-  } 
-  // 상태 클릭시 재입력
-  document.getElementById('gh-status').onclick = ()=>{
-    if(getToken()) {
-      document.getElementById('gh-input-wrap').style.display='flex';
-      document.getElementById('gh-status').textContent = '';
-    }
-  };
-});
-
-// GitHub에 JSON 저장
-async function saveToGitHub() {
-  const token = getToken();
-  if (!token) {
-    showToast('⚠️ 토큰을 먼저 입력해주세요');
-    return;
-  }
-  const ghStatus = document.getElementById('gh-status');
-  ghStatus.textContent = '☁️ 저장 중...';
-  ghStatus.className = 'github-status';
-  try {
-    // 현재 파일 SHA 가져오기
-    const getRes = await fetch(
-      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
-      { headers: { 'Authorization': 'token ' + token } }
-    );
-    const getJson = await getRes.json();
-    const sha = getJson.sha;
-
-    // 파일 업데이트
-    const saveData = {materials:MAT, connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))};
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(saveData, null, 2))));
-    const putRes = await fetch(
-      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Authorization': 'token ' + token,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: '재료 데이터 업데이트',
-          content: content,
-          sha: sha
-        })
-      }
-    );
-    if (putRes.ok) {
-      ghStatus.textContent = '☁️ GitHub 저장 완료!';
-      ghStatus.className = 'github-status ok';
-      setTimeout(()=>{ghStatus.textContent='🔑 토큰 등록됨';}, 3000);
-    } else {
-      throw new Error('저장 실패');
-    }
-  } catch(e) {
-    ghStatus.textContent = '❌ 저장 실패';
-    ghStatus.className = 'github-status err';
-  }
-}
-
-// GitHub JSON URL
-const GITHUB_JSON = 'https://kadee322.github.io/maho-dagam/maho_재료데이터.json';
-
-// 시작 시 localStorage 자동 로드 (렌더링 전에!)
-const hadSaved = loadFromLocal();
-
-// 채집장소 검색 드롭다운
-let locSelected=[];
-document.addEventListener('input', e=>{
-  if(e.target.id!=='edit-location')return;
-  const q=e.target.value.trim();
-  const dd=document.getElementById('loc-dropdown');
-  if(!q){dd.style.display='none';return;}
-  const results=Object.entries(AREAS).filter(([no,a])=>
-    no.includes(q)||a.name.includes(q)
-  ).slice(0,8);
-  if(!results.length){dd.style.display='none';return;}
-  dd.innerHTML=results.map(([no,a])=>
-    `<div class="loc-drop-item" data-no="${no}">
-      <span class="loc-drop-no">${no}</span>${a.name}
-    </div>`).join('');
-  dd.style.display='block';
-  dd.querySelectorAll('.loc-drop-item').forEach(el=>{
-    el.onclick=()=>{
-      const no=el.dataset.no;
-      if(!locSelected.includes(no)) locSelected.push(no);
-      document.getElementById('edit-location').value='';
-      dd.style.display='none';
-      renderLocTags();
-    };
-  });
-});
-document.addEventListener('click', e=>{
-  if(!e.target.closest('#edit-location')&&!e.target.closest('#loc-dropdown'))
-    document.getElementById('loc-dropdown').style.display='none';
-});
-function renderLocTags(){
-  const wrap=document.getElementById('loc-tags');
-  if(!wrap)return;
-  wrap.innerHTML=locSelected.map(no=>{
-    const a=AREAS[no];
-    return `<div class="loc-tag" data-no="${no}">${no}. ${a?a.name:no}</div>`;
-  }).join('');
-  wrap.querySelectorAll('.loc-tag').forEach(el=>{
-    el.onclick=()=>{locSelected=locSelected.filter(n=>n!==el.dataset.no);renderLocTags();};
-  });
-}
-
-// GitHub JSON 자동 로드 후 렌더링
-async function initLoad() {
-  try {
-    const res = await fetch(GITHUB_JSON + '?t=' + Date.now());
-    if (res.ok) {
-      const raw = await res.json();
-      const data = Array.isArray(raw) ? raw : (raw.materials || []);
-      if (data.length) {
-        data.forEach(savedM => {
-          const idx = MAT.findIndex(m => m.id === savedM.id);
-          if (idx >= 0) Object.assign(MAT[idx], savedM);
-          else MAT.push(savedM);
-        });
-        // connects 복원
-        if(raw.connects) {
-          Object.entries(raw.connects).forEach(([no,c])=>{
-            if(AREAS[no] && c) AREAS[no].connects = c;
-          });
-        }
-        saveToLocal();
-        showToast('☁️ GitHub 데이터 로드 완료!');
-      } else if (hadSaved) {
-        showToast('✅ 저장된 데이터 불러옴');
-      }
-    } else if (hadSaved) {
-      showToast('✅ 저장된 데이터 불러옴');
-    }
-  } catch(e) {
-    if (hadSaved) showToast('✅ 저장된 데이터 불러옴');
-  }
-  
 // 연결 모달
 document.addEventListener('click', e=>{
   if(e.target.id==='conn-close'||e.target.id==='conn-modal')
