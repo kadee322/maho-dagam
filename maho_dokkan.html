@@ -633,8 +633,7 @@ document.addEventListener('click', e => {
     document.getElementById('edit-modal').classList.remove('on');
     document.getElementById('modal').classList.remove('on');
     saveToLocal();
-    autoExportJSON();
-    showToast('✅ 저장됨 · JSON 자동 저장');
+    showToast('✅ 저장됨');
     renderMats();renderMap();
     setTimeout(()=>showMatModal(m.id),100);
   }
@@ -731,6 +730,9 @@ document.addEventListener('change', e => {
   }
 });
 
+// GitHub JSON URL
+const GITHUB_JSON = 'https://kadee322.github.io/maho-dagam/maho_재료데이터.json';
+
 // 시작 시 localStorage 자동 로드 (렌더링 전에!)
 const hadSaved = loadFromLocal();
 
@@ -776,8 +778,33 @@ function renderLocTags(){
   });
 }
 
-renderMap();renderMats();renderSpells();
-if (hadSaved) showToast('✅ 저장된 데이터 불러옴');
+// GitHub JSON 자동 로드 후 렌더링
+async function initLoad() {
+  try {
+    const res = await fetch(GITHUB_JSON + '?t=' + Date.now());
+    if (res.ok) {
+      const raw = await res.json();
+      const data = Array.isArray(raw) ? raw : (raw.materials || []);
+      if (data.length) {
+        data.forEach(savedM => {
+          const idx = MAT.findIndex(m => m.id === savedM.id);
+          if (idx >= 0) Object.assign(MAT[idx], savedM);
+          else MAT.push(savedM);
+        });
+        saveToLocal();
+        showToast('☁️ GitHub 데이터 로드 완료!');
+      } else if (hadSaved) {
+        showToast('✅ 저장된 데이터 불러옴');
+      }
+    } else if (hadSaved) {
+      showToast('✅ 저장된 데이터 불러옴');
+    }
+  } catch(e) {
+    if (hadSaved) showToast('✅ 저장된 데이터 불러옴');
+  }
+  renderMap();renderMats();renderSpells();
+}
+initLoad();
 </script>
 
 <div class="edit-modal-overlay" id="edit-modal">
