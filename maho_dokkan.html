@@ -44,6 +44,10 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 .tag-effect-변이혼돈{background:#3a1a5a;color:#d4a0ff}.tag-effect-정신안정{background:#1a3a5a;color:#90c0ff}.tag-effect-물리안정{background:#1a3a2a;color:#80d080}.tag-effect-강화조장{background:#5a3a0a;color:#ffc060}.tag-effect-중화안정{background:#3a3a1a;color:#e0e080}.tag-effect-환각{background:#5a1a1a;color:#ff9090}.tag-effect-미확인{background:rgba(42,31,14,.12);color:var(--ink3)}
 .tag-type{background:rgba(42,31,14,.1);color:var(--ink2)}
 .mat-loc{font-size:10px;color:var(--ink3);text-align:center}
+.mat-season{font-size:10px;text-align:center;margin-bottom:3px;color:var(--ink3)}
+.season-el{font-weight:700;margin:0 2px;text-shadow:0 0 1px rgba(0,0,0,.15)}
+.season-all{font-weight:700;color:var(--ink3);opacity:.8}
+.modal-season .season-el{font-size:12px}
 .mat-hint{font-size:10px;color:var(--gold);margin-top:4px;overflow:hidden;max-height:3em;line-height:1.5}
 .mat-desc{font-size:11px;color:var(--ink3);margin-top:5px;overflow:hidden;max-height:3em;line-height:1.5}
 .spell-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
@@ -59,15 +63,7 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 .recipe-num{width:17px;height:17px;border-radius:50%;background:transparent;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
 .recipe-mat{flex:1;font-weight:600}
 .recipe-how{font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(42,31,14,.1);color:var(--ink3)}
-.map-layout{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
-.region-nav{display:flex;flex-direction:column;gap:5px;max-height:80vh;overflow-y:auto}
-.region-group-title{font-size:10px;color:var(--gold);letter-spacing:.15em;padding:10px 13px 4px;opacity:.7}
-.region-btn{display:flex;align-items:center;gap:9px;background:rgba(245,234,214,.07);border:1px solid rgba(200,150,50,.25);color:var(--parch2);padding:9px 13px;border-radius:2px;cursor:pointer;font-size:12px;text-align:left;font-family:inherit}
-.region-btn:hover,.region-btn.on{background:rgba(245,234,214,.14);border-color:var(--gold);color:var(--parch)}
-.region-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.region-no{font-size:10px;color:var(--gold);opacity:.7}
-.region-count{margin-left:auto;font-size:10px;color:var(--gold);opacity:.65}
-.map-detail{background:rgba(245,234,214,.05);border:1px solid rgba(200,150,50,.18);border-radius:2px;padding:18px;min-height:200px}
+.map-detail{min-height:120px}
 .map-region-name{font-size:17px;color:var(--gold3);margin-bottom:5px}
 .map-detail-body{display:grid;grid-template-columns:4fr 6fr;gap:16px;align-items:start;margin-top:14px}
 .map-connects-panel{background:rgba(245,234,214,.04);border:1px solid rgba(200,150,50,.15);border-radius:2px;padding:14px}
@@ -88,6 +84,19 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 .map-mat-thumb-ph{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:28px;background:rgba(245,234,214,.05)}
 .map-mat-name{font-size:10px;font-weight:700;color:var(--parch);line-height:1.3}
 .map-mat-sub{font-size:9px;color:rgba(245,234,214,.4)}
+#map-modal .map-region-name{color:var(--ink);font-weight:700}
+#map-modal .map-connects-panel{background:rgba(42,31,14,.05);border-color:rgba(120,80,20,.25)}
+#map-modal .connect-slot{background:rgba(42,31,14,.05);border-color:rgba(120,80,20,.22)}
+#map-modal .connect-slot:hover{background:rgba(42,31,14,.1);border-color:var(--gold)}
+#map-modal .connect-name{color:var(--ink)}
+#map-modal .connect-dir{color:var(--gold)}
+#map-modal .map-mat-item{background:rgba(42,31,14,.05);border-color:rgba(120,80,20,.18)}
+#map-modal .map-mat-item:hover{background:rgba(42,31,14,.1);border-color:var(--gold)}
+#map-modal .map-mat-name{color:var(--ink)}
+#map-modal .map-mat-sub{color:var(--ink3)}
+#map-modal .map-mat-thumb,#map-modal .map-mat-thumb-ph{background:var(--parch2)}
+#map-modal .map-connects-title{color:var(--ink3)}
+#map-modal .map-detail-body>div>div:first-child{color:var(--ink3)!important}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.on{display:flex}
 .modal-box{background:var(--parch);border:2px solid var(--gold);border-radius:3px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;padding:26px;position:relative}
@@ -121,7 +130,21 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 .conn-result-item:hover{background:var(--parch2)}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--parch);padding:10px 20px;border-radius:3px;font-size:13px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--gold)}
 .toast.show{opacity:1}
-@media(max-width:768px){.map-layout{grid-template-columns:1fr}.map-detail-body{grid-template-columns:1fr}}
+.map-layer{margin-bottom:30px;background:linear-gradient(160deg,rgba(245,234,214,.07),rgba(245,234,214,.02));border:1px solid rgba(200,150,50,.18);border-radius:6px;padding:18px 20px 22px;box-shadow:0 8px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,220,150,.08)}
+.map-layer-title{font-size:15px;color:var(--gold3);letter-spacing:.12em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.map-layer-cnt{font-size:11px;color:var(--gold);opacity:.7;letter-spacing:.05em}
+.map-grid-board{display:grid;gap:9px}
+.map-cell-empty{aspect-ratio:1}
+.map-cell{min-height:78px;background:var(--parch);border:2px solid var(--gold2);border-radius:3px;padding:5px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;transition:transform .15s,box-shadow .15s;box-shadow:0 3px 10px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.25);overflow:hidden}
+.map-cell:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 8px 22px rgba(0,0,0,.45),0 0 0 2px var(--gold3);z-index:5}
+.map-cell-start{background:linear-gradient(160deg,#fff4d8,#f5e3b0);box-shadow:0 0 0 2px #e8b84a,0 4px 16px rgba(232,184,74,.5),inset 0 0 0 1px rgba(255,255,255,.4);animation:startGlow 2.4s ease-in-out infinite}
+@keyframes startGlow{0%,100%{box-shadow:0 0 0 2px #e8b84a,0 4px 16px rgba(232,184,74,.45),inset 0 0 0 1px rgba(255,255,255,.4)}50%{box-shadow:0 0 0 2px #ffd76a,0 4px 22px rgba(232,184,74,.8),inset 0 0 0 1px rgba(255,255,255,.5)}}
+.map-cell-startflag{font-size:8px;font-weight:700;color:#8a5a10;letter-spacing:.05em;margin-bottom:1px}
+.map-cell-no{position:absolute;top:3px;left:4px;font-size:9px;font-weight:700;color:var(--ink3);opacity:.8}
+.map-cell-name{font-size:11px;font-weight:700;color:var(--ink);line-height:1.2;text-align:center;word-break:keep-all}
+.map-cell-cnt{font-size:9px;color:var(--ink3);margin-top:1px}
+.map-cell-cross{font-size:8px;color:#7a4a8a;background:rgba(180,120,200,.18);border:1px solid rgba(180,120,200,.35);border-radius:6px;padding:1px 5px;margin-top:3px;line-height:1.25;text-align:center;word-break:keep-all;max-width:100%}
+@media(max-width:768px){.map-layout{grid-template-columns:1fr}.map-detail-body{grid-template-columns:1fr}.map-grid-board{gap:6px}.map-cell-name{font-size:10px}}
 </style>
 </head>
 <body>
@@ -143,11 +166,8 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 </nav>
 <main>
   <div class="page on" id="page-map">
-    <div class="sec-title">✦ 채집 지역 안내</div>
-    <div class="map-layout">
-      <div class="region-nav" id="region-nav"></div>
-      <div class="map-detail" id="map-detail"><div style="color:rgba(245,234,214,.35);text-align:center;padding:40px">좌측 지역을 선택하세요</div></div>
-    </div>
+    <div class="sec-title">✦ 채집 지역 지도</div>
+    <div id="map-grid-wrap"></div>
   </div>
   <div class="page" id="page-materials">
     <div class="sec-title">✦ 마법재료 도감</div>
@@ -179,6 +199,7 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
   </div>
 </main>
 <div class="modal-overlay" id="modal"><div class="modal-box"><button class="modal-close" id="modal-close">×</button><div id="modal-content"></div></div></div>
+<div class="modal-overlay" id="map-modal"><div class="modal-box" style="max-width:620px"><button class="modal-close" id="map-modal-close">×</button><div id="map-detail"></div></div></div>
 <div class="modal-overlay" id="edit-modal"><div class="modal-box" style="max-width:440px"><button class="modal-close" id="edit-close">×</button>
   <h3 id="edit-title" style="font-size:15px;font-weight:700;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--parch3)">재료 수정</h3>
   <input type="hidden" id="edit-id"/>
@@ -214,6 +235,15 @@ const DIRS=[{key:'north',label:'북'},{key:'east',label:'동'},{key:'south',labe
 
 function getEmoji(m){return TYPE_EMOJI[m.type]||'✨';}
 function getImg(n){return IMGS[n]||null;}
+const SEASON_COLOR={'땅':'#9a6f2a','불':'#c23a2a','풍':'#3a9a4a','물':'#2a6ac2','황':'#9a4ac2','혼':'#9a4ac2'};
+function renderSeason(season){
+  if(!season)return '';
+  const s=season.trim();
+  if(s==='연중')return '<span class="season-all">연중</span>';
+  const parts=s.split(',').map(x=>x.trim()).filter(Boolean);
+  const chips=parts.map(p=>{const c=SEASON_COLOR[p]||'#6b4e2a';return `<span class="season-el" style="color:${c}">${esc(p)}</span>`;}).join('');
+  return chips;
+}
 function getToken(){return localStorage.getItem(GH_TOKEN_KEY)||'';}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
@@ -276,23 +306,81 @@ async function saveToGitHub(){
 // 탭
 document.querySelectorAll('.nav-btn').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));t.classList.add('on');document.getElementById('page-'+t.dataset.page).classList.add('on');};});
 
-// 맵
-function renderMap(){
-  const nav=document.getElementById('region-nav');
+// 맵 — 지도 시각화
+const MAP_DELTA={north:[0,-1],east:[1,0],south:[0,1],west:[-1,0]};
+const REGION_ORDER=['섬','북쪽지방','동굴'];
+function computeRegionLayout(regionNodes){
+  const nodeset=new Set(regionNodes);
+  const start=regionNodes.slice().sort((a,b)=>+a-+b)[0];
+  const pos={},occ={},key=(x,y)=>x+','+y;
+  pos[start]=[0,0];occ[key(0,0)]=start;const q=[start];
+  while(q.length){
+    const a=q.shift();const ax=pos[a][0],ay=pos[a][1];const conn=getConnects(a);
+    for(const dir of ['north','east','south','west']){
+      const dx=MAP_DELTA[dir][0],dy=MAP_DELTA[dir][1];
+      for(const b of conn[dir]){
+        if(!nodeset.has(b)||pos[b])continue;
+        let nx=ax+dx,ny=ay+dy,tries=0;
+        while(occ[key(nx,ny)]&&tries<6&&(dx||dy)){nx+=dx;ny+=dy;tries++;}
+        if(occ[key(nx,ny)]){nx=ax+dx;ny=ay+dy;let rad=1,done=false;
+          while(!done&&rad<=20){for(let ddx=-rad;ddx<=rad&&!done;ddx++)for(let ddy=-rad;ddy<=rad&&!done;ddy++){const cx=ax+dx+ddx,cy=ay+dy+ddy;if(!occ[key(cx,cy)]){nx=cx;ny=cy;done=true;}}rad++;}}
+        pos[b]=[nx,ny];occ[key(nx,ny)]=b;q.push(b);
+      }
+    }
+  }
+  const xs=Object.values(pos).map(p=>p[0]),ys=Object.values(pos).map(p=>p[1]);
+  const minx=Math.min(...xs),miny=Math.min(...ys);
+  const norm={};for(const n in pos)norm[n]=[pos[n][0]-minx,pos[n][1]-miny];
+  return {pos:norm,cols:Math.max(...xs)-minx+1,rows:Math.max(...ys)-miny+1};
+}
+function buildAreaMatCount(){
   const amap={};
-  MAT.forEach(m=>{if(!m.location)return;m.location.split(',').map(s=>s.trim()).forEach(l=>{if(!amap[l])amap[l]=[];if(!amap[l].find(x=>x.id===m.id))amap[l].push(m);});});
-  const order=['섬','북쪽지방','동굴'];
-  const sorted=Object.entries(AREAS).sort((a,b)=>+a[0]-+b[0]);
-  let h='';
-  order.forEach(reg=>{
-    h+=`<div class="region-group-title">${reg}</div>`;
-    h+=sorted.filter(([,a])=>a.region===reg).map(([no,a])=>{
-      const cnt=(amap[no]||[]).length;
-      return `<button class="region-btn" data-no="${no}"><span class="region-dot" style="background:${a.color}"></span><span class="region-no">${no}.</span>${a.name}${cnt?`<span class="region-count">${cnt}종</span>`:''}</button>`;
-    }).join('');
+  MAT.forEach(m=>{if(!m.location)return;m.location.split(',').map(s=>s.trim()).forEach(l=>{if(!amap[l])amap[l]=new Set();amap[l].add(m.id);});});
+  const cnt={};for(const k in amap)cnt[k]=amap[k].size;return cnt;
+}
+function renderMapGrid(){
+  const wrap=document.getElementById('map-grid-wrap');
+  const byReg={};
+  Object.entries(AREAS).forEach(([no,a])=>{(byReg[a.region]=byReg[a.region]||[]).push(no);});
+  const matCnt=buildAreaMatCount();
+  // 각 셀이 '다른 구역'으로 이어지는 목적지 모으기
+  const crossOf={};
+  Object.entries(AREAS).forEach(([no,a])=>{
+    const conn=getConnects(no);
+    ['north','east','south','west'].forEach(dir=>{conn[dir].forEach(b=>{
+      if(AREAS[b]&&AREAS[b].region!==a.region){(crossOf[no]=crossOf[no]||[]).push(b);}
+    });});
   });
-  nav.innerHTML=h;
-  nav.querySelectorAll('.region-btn').forEach(b=>{b.onclick=()=>{nav.querySelectorAll('.region-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderMapDetail(b.dataset.no);};});
+  const START_NO='14';
+  let h='';
+  for(const reg of REGION_ORDER){
+    const nodes=byReg[reg];if(!nodes||!nodes.length)continue;
+    const lay=computeRegionLayout(nodes);
+    h+=`<div class="map-layer"><div class="map-layer-title">${reg} <span class="map-layer-cnt">${nodes.length}곳</span></div><div class="map-grid-board" style="grid-template-columns:repeat(${lay.cols},minmax(78px,1fr))">`;
+    const cellOf={};for(const n in lay.pos){cellOf[lay.pos[n][0]+','+lay.pos[n][1]]=n;}
+    for(let y=0;y<lay.rows;y++)for(let x=0;x<lay.cols;x++){
+      const n=cellOf[x+','+y];
+      if(!n){h+=`<div class="map-cell-empty"></div>`;continue;}
+      const a=AREAS[n],cnt=matCnt[n]||0;
+      const isStart=(n===START_NO);
+      const crosses=crossOf[n]||[];
+      const crossBadge=crosses.length?`<div class="map-cell-cross">🔀 ${crosses.map(b=>`${b}.${AREAS[b].name}`).join(' · ')}</div>`:'';
+      h+=`<div class="map-cell${isStart?' map-cell-start':''}" data-mapno="${n}" style="border-color:${isStart?'#e8b84a':a.color}">${isStart?'<div class="map-cell-startflag">★ 시작</div>':''}<div class="map-cell-no">${n}</div><div class="map-cell-name">${esc(a.name)}</div>${cnt?`<div class="map-cell-cnt">🌿${cnt}</div>`:''}${crossBadge}</div>`;
+    }
+    h+=`</div></div>`;
+  }
+  wrap.innerHTML=h;
+  wrap.querySelectorAll('.map-cell').forEach(el=>el.onclick=()=>{
+    openMapModal(el.dataset.mapno);
+  });
+}
+function openMapModal(no){
+  renderMapDetail(no);
+  document.getElementById('map-modal').classList.add('on');
+}
+
+function renderMap(){
+  renderMapGrid();
 }
 function renderMapDetail(no){
   const detail=document.getElementById('map-detail');
@@ -310,10 +398,10 @@ function renderMapDetail(no){
     <div class="map-detail-body">
       <div class="map-connects-panel"><div class="map-connects-title">🔗 이어지는 맵</div><div class="connect-grid">${slots}</div></div>
       <div><div style="font-size:11px;color:var(--gold);margin-bottom:10px">🌿 채집 재료 (${mats.length}종)</div>
-      ${mats.length?`<div class="map-mat-grid">${mats.map(m=>{const src=getImg(m.id);return `<div class="map-mat-item" data-mat="${esc(m.id)}">${src?`<img src="${src}" class="map-mat-thumb"/>`:`<div class="map-mat-thumb-ph">${getEmoji(m)}</div>`}<div class="map-mat-name">${m.id}</div><div class="map-mat-sub">${m.effect}</div></div>`;}).join('')}</div>`:`<div style="color:rgba(245,234,214,.3);font-size:12px;padding:20px 0">재료 없음</div>`}
+      ${mats.length?`<div class="map-mat-grid">${mats.map(m=>{const src=getImg(m.id);return `<div class="map-mat-item" data-mat="${esc(m.id)}">${src?`<img src="${src}" class="map-mat-thumb" loading="lazy" decoding="async"/>`:`<div class="map-mat-thumb-ph">${getEmoji(m)}</div>`}<div class="map-mat-name">${m.id}</div><div class="map-mat-sub">${m.effect}</div></div>`;}).join('')}</div>`:`<div style="color:rgba(245,234,214,.3);font-size:12px;padding:20px 0">재료 없음</div>`}
       </div></div>`;
   detail.querySelectorAll('.connect-slot.empty').forEach(el=>{el.onclick=()=>openConnModal(el.dataset.addno,el.dataset.dir);});
-  detail.querySelectorAll('.connect-slot:not(.empty)').forEach(el=>{el.onclick=e=>{if(e.target.classList.contains('connect-del'))return;const t=el.dataset.target;if(AREAS[t]){document.querySelectorAll('.region-btn').forEach(b=>b.classList.toggle('on',b.dataset.no===t));renderMapDetail(t);}};});
+  detail.querySelectorAll('.connect-slot:not(.empty)').forEach(el=>{el.onclick=e=>{if(e.target.classList.contains('connect-del'))return;const t=el.dataset.target;if(AREAS[t]){renderMapDetail(t);}};});
   detail.querySelectorAll('.connect-del').forEach(btn=>{btn.onclick=e=>{e.stopPropagation();const mn=btn.dataset.mapno,dir=btn.dataset.dir,tg=btn.dataset.target;const c=getConnects(mn);c[dir]=c[dir].filter(n=>n!==tg);setConnects(mn,c);const opp={north:'south',south:'north',east:'west',west:'east'}[dir];if(AREAS[tg]){const tc=getConnects(tg);tc[opp]=tc[opp].filter(n=>n!==mn);setConnects(tg,tc);}saveToGitHub();renderMapDetail(mn);};});
   detail.querySelectorAll('.map-mat-item').forEach(el=>el.onclick=()=>showMatModal(el.dataset.mat));
 }
@@ -339,9 +427,10 @@ function renderMats(){
     const src=getImg(m.id);
     const loc=(m.location||'').split(',').map(s=>s.trim()).filter(Boolean).map(no=>AREAS[no]?no+'. '+AREAS[no].name:no).join(', ');
     return `<div class="mat-card" data-mat="${esc(m.id)}">
-      <div class="mat-img-wrap"><div class="mat-no">${String(i+1).padStart(3,'0')}</div>${src?`<img src="${src}" class="mat-img"/>`:`<div class="mat-img-placeholder">${getEmoji(m)}</div>`}</div>
+      <div class="mat-img-wrap"><div class="mat-no">${String(i+1).padStart(3,'0')}</div>${src?`<img src="${src}" class="mat-img" loading="lazy" decoding="async"/>`:`<div class="mat-img-placeholder">${getEmoji(m)}</div>`}</div>
       <div class="mat-card-body"><div class="mat-name">${m.id}</div>
         <div class="mat-tags"><span class="tag tag-effect-${m.effect}">${m.effect}</span><span class="tag tag-type">${m.type}</span></div>
+        ${m.season?`<div class="mat-season">🗓 ${renderSeason(m.season)}</div>`:''}
         ${loc?`<div class="mat-loc">📍 ${loc}</div>`:''}
         ${m.hint?`<div class="mat-hint">💡 ${esc(m.hint)}</div>`:''}
         ${m.desc&&m.desc!=='—'?`<div class="mat-desc">${esc(m.desc)}</div>`:''}
@@ -372,7 +461,7 @@ function showMatModal(name){
   document.getElementById('modal-content').innerHTML=`
     <div class="modal-img-frame">${src?`<img src="${src}"/>`:`<div class="ph">${getEmoji(m)}</div>`}</div>
     <div class="modal-title">${m.id}</div>
-    <div class="modal-sub">${m.type} · ${m.season||''}</div>
+    <div class="modal-sub">${m.type}${m.season?` · <span class="modal-season">${renderSeason(m.season)}</span>`:''}</div>
     <div class="modal-tags"><span class="tag tag-effect-${m.effect}">${m.effect}</span><span class="tag tag-type">${m.type}</span></div>
     ${m.desc&&m.desc!=='—'?`<div class="modal-section"><h4>설명</h4><p>${esc(m.desc)}</p></div>`:''}
     ${m.hint?`<div class="modal-section"><h4>채집 힌트</h4><p style="color:var(--gold)">💡 ${esc(m.hint)}</p></div>`:''}
@@ -419,6 +508,7 @@ document.addEventListener('click',e=>{
   if(id==='modal-close'||id==='modal')document.getElementById('modal').classList.remove('on');
   if(id==='edit-close'||id==='edit-cancel'||id==='edit-modal')document.getElementById('edit-modal').classList.remove('on');
   if(id==='conn-close'||id==='conn-modal')document.getElementById('conn-modal').classList.remove('on');
+  if(id==='map-modal-close'||id==='map-modal')document.getElementById('map-modal').classList.remove('on');
   if(id==='btn-export')exportJSON();
   if(id==='btn-import'){const f=document.getElementById('import-file');if(f)f.click();}
   if(id==='gh-save-token'){const t=document.getElementById('gh-token').value.trim();if(t){localStorage.setItem(GH_TOKEN_KEY,t);document.getElementById('gh-input-wrap').style.display='none';document.getElementById('gh-status').textContent='☁️';}}
@@ -457,7 +547,7 @@ document.addEventListener('input',e=>{
     dd.querySelectorAll('[data-locno]').forEach(el=>el.onclick=()=>{const no=el.dataset.locno;if(!locSelected.includes(no))locSelected.push(no);document.getElementById('edit-location').value='';dd.style.display='none';renderLocTags();});
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('modal').classList.remove('on');document.getElementById('edit-modal').classList.remove('on');document.getElementById('conn-modal').classList.remove('on');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('modal').classList.remove('on');document.getElementById('edit-modal').classList.remove('on');document.getElementById('conn-modal').classList.remove('on');document.getElementById('map-modal').classList.remove('on');}});
 
 // 초기화
 window.addEventListener('load',()=>{
@@ -466,13 +556,18 @@ window.addEventListener('load',()=>{
 });
 
 async function init(){
-  const hadLocal=loadData();
+  // 1) 내장/로컬 데이터로 화면 즉시 렌더 (대기 없음)
+  loadData();
+  renderMap();renderMats();renderSpells();
+  // 2) GitHub 최신본은 백그라운드로 받아서, 갱신되면 다시 렌더
   try{
     const res=await fetch(GITHUB_JSON+'?t='+Date.now());
-    if(res.ok){const raw=await res.json();applyData(raw);saveData();showToast('☁️ GitHub 로드 완료!');}
-    else if(hadLocal)showToast('✅ 저장 데이터 로드');
-  }catch(e){if(hadLocal)showToast('✅ 저장 데이터 로드');}
-  renderMap();renderMats();renderSpells();
+    if(res.ok){
+      const raw=await res.json();applyData(raw);saveData();
+      renderMap();renderMats();renderSpells();
+      showToast('☁️ 최신 데이터 동기화 완료');
+    }
+  }catch(e){}
 }
 init();
 </script>
