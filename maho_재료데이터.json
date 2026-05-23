@@ -417,8 +417,8 @@
     "id": "제레티아무르",
     "type": "꽃",
     "effect": "정신안정",
-    "location": "",
-    "season": "연중",
+    "location": "9",
+    "season": "땅, 불, 물",
     "desc": "오렌지색 특이한 꽃. 가시 많음.",
     "hint": ""
   },
