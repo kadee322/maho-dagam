@@ -1135,11 +1135,11 @@
   },
   {
     "id": "카쿠라코름",
-    "type": "미분류",
-    "effect": "미확인",
-    "location": "",
+    "type": "꽃",
+    "effect": "물리안정",
+    "location": "22",
     "season": "연중",
-    "desc": "—",
+    "desc": "매우 작은 파란 열매.",
     "hint": ""
   },
   {
