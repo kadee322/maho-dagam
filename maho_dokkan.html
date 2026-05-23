@@ -672,10 +672,250 @@ document.addEventListener('keydown', e=>{
   if(e.key==='Escape') document.getElementById('conn-modal').classList.remove('on');
 });
 
-// 시작시 connects 로드
+
+const STORAGE_KEY = 'maho_mat_edits_v1';
+const GH_USER = 'kadee322';
+const GH_REPO = 'maho-dagam';
+const GH_FILE = 'maho_재료데이터.json';
+const GH_TOKEN_KEY = 'maho_gh_token';
+const GITHUB_JSON = 'https://kadee322.github.io/maho-dagam/maho_재료데이터.json';
+
+function getToken() { return localStorage.getItem(GH_TOKEN_KEY)||''; }
+
+function saveToLocal() {
+  try {
+    const data = {
+      materials: MAT,
+      connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch(e) { console.warn('localStorage 저장 실패', e); }
+}
+
+function loadFromLocal() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return false;
+    const parsed = JSON.parse(saved);
+    const matList = Array.isArray(parsed) ? parsed : (parsed.materials || []);
+    matList.forEach(savedM => {
+      const idx = MAT.findIndex(m => m.id === savedM.id);
+      if (idx >= 0) Object.assign(MAT[idx], savedM);
+      else MAT.push(savedM);
+    });
+    if(parsed.connects) {
+      Object.entries(parsed.connects).forEach(([no,c])=>{
+        if(AREAS[no] && c) {
+          const migrated = {};
+          ['north','east','south','west'].forEach(d=>{
+            const v = c[d];
+            if(Array.isArray(v)) migrated[d] = v;
+            else if(v) migrated[d] = [String(v)];
+            else migrated[d] = [];
+          });
+          AREAS[no].connects = migrated;
+        }
+      });
+    }
+    return true;
+  } catch(e) { return false; }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function exportJSON() {
+  const exportData = {
+    materials: MAT,
+    connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))
+  };
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'maho_재료데이터.json';
+  a.click();
+  showToast('💾 데이터 저장 완료!');
+}
+
+function importJSON(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const raw = JSON.parse(e.target.result);
+      const list = Array.isArray(raw) ? raw : (raw.materials || []);
+      if (!list.length) { showToast('❌ 재료 데이터가 없어요'); return; }
+      list.forEach(savedM => {
+        const idx = MAT.findIndex(m => m.id === savedM.id);
+        if (idx >= 0) Object.assign(MAT[idx], savedM);
+        else MAT.push(savedM);
+      });
+      if(raw.connects) {
+        Object.entries(raw.connects).forEach(([no,c])=>{
+          if(AREAS[no] && c) {
+            const migrated = {};
+            ['north','east','south','west'].forEach(d=>{
+              const v = c[d];
+              if(Array.isArray(v)) migrated[d] = v;
+              else if(v) migrated[d] = [String(v)];
+              else migrated[d] = [];
+            });
+            AREAS[no].connects = migrated;
+          }
+        });
+      }
+      saveToLocal();
+      renderMats(); renderMap();
+      showToast('📂 ' + list.length + '개 재료 데이터 불러오기 완료!');
+    } catch(e) { showToast('❌ 파일 형식 오류'); }
+  };
+  reader.readAsText(file);
+}
+
+async function saveToGitHub() {
+  const token = getToken();
+  if (!token) { showToast('⚠️ 토큰을 먼저 입력해주세요'); return; }
+  const ghStatus = document.getElementById('gh-status');
+  if(ghStatus) { ghStatus.textContent = '☁️ 저장 중...'; ghStatus.className = 'github-status'; }
+  try {
+    const getRes = await fetch(
+      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
+      { headers: { 'Authorization': 'token ' + token } }
+    );
+    const getJson = await getRes.json();
+    const sha = getJson.sha;
+    const saveData = {
+      materials: MAT,
+      connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))
+    };
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(saveData, null, 2))));
+    const putRes = await fetch(
+      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: '데이터 업데이트', content, sha })
+      }
+    );
+    if (putRes.ok) {
+      if(ghStatus) { ghStatus.textContent = '☁️'; ghStatus.className = 'github-status ok'; }
+      showToast('☁️ GitHub 저장 완료!');
+    } else { throw new Error(); }
+  } catch(e) {
+    if(ghStatus) { ghStatus.textContent = '❌'; ghStatus.className = 'github-status err'; }
+  }
+}
+
+// 토큰 저장 버튼
+document.addEventListener('click', e => {
+  if (e.target.id === 'gh-save-token') {
+    const t = document.getElementById('gh-token').value.trim();
+    if (!t) return;
+    localStorage.setItem(GH_TOKEN_KEY, t);
+    document.getElementById('gh-input-wrap').style.display='none';
+    document.getElementById('gh-status').textContent = '☁️';
+  }
+  if (e.target.id === 'btn-export') exportJSON();
+  if (e.target.id === 'btn-import') { const fi=document.getElementById('import-file'); if(fi) fi.click(); }
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'import-file') {
+    if (e.target.files[0]) importJSON(e.target.files[0]);
+    e.target.value = '';
+  }
+});
+window.addEventListener('load', ()=>{
+  if(getToken()) {
+    const iw = document.getElementById('gh-input-wrap');
+    if(iw) iw.style.display='none';
+    const gs = document.getElementById('gh-status');
+    if(gs) gs.textContent = '☁️';
+  }
+  document.getElementById('gh-status').onclick = ()=>{
+    if(getToken()) {
+      const iw = document.getElementById('gh-input-wrap');
+      if(iw) iw.style.display='flex';
+      document.getElementById('gh-status').textContent = '';
+    }
+  };
+});
+
+// 수정 저장
+document.addEventListener('click', e => {
+  if (e.target.id==='edit-save') {
+    const oldId=document.getElementById('edit-id').value;
+    const m=MAT.find(x=>x.id===oldId); if(!m) return;
+    m.id=document.getElementById('edit-name').value.trim()||m.id;
+    m.type=document.getElementById('edit-type').value;
+    m.effect=document.getElementById('edit-effect').value;
+    m.location=locSelected.join(',');
+    m.season=document.getElementById('edit-season').value.trim();
+    m.hint=document.getElementById('edit-hint').value.trim();
+    m.desc=document.getElementById('edit-desc').value.trim();
+    document.getElementById('edit-modal').classList.remove('on');
+    document.getElementById('modal').classList.remove('on');
+    saveToLocal();
+    saveToGitHub();
+    showToast('✅ 저장됨');
+    renderMats(); renderMap();
+    setTimeout(()=>showMatModal(m.id), 100);
+  }
+  if (e.target.id==='edit-close'||e.target.id==='edit-cancel')
+    document.getElementById('edit-modal').classList.remove('on');
+  if (e.target.id==='edit-modal')
+    document.getElementById('edit-modal').classList.remove('on');
+  if (e.target.id==='modal-close') document.getElementById('modal').classList.remove('on');
+  if (e.target.id==='modal') document.getElementById('modal').classList.remove('on');
+});
+
+
+// 시작시 로컬 데이터 로드
+const hadSaved = loadFromLocal();
 loadAreaConnects();
 
-renderMap();renderMats();renderSpells();
+// GitHub JSON 자동 로드 후 렌더링
+async function initLoad() {
+  try {
+    const res = await fetch(GITHUB_JSON + '?t=' + Date.now());
+    if (res.ok) {
+      const raw = await res.json();
+      const data = Array.isArray(raw) ? raw : (raw.materials || []);
+      if (data.length) {
+        data.forEach(savedM => {
+          const idx = MAT.findIndex(m => m.id === savedM.id);
+          if (idx >= 0) Object.assign(MAT[idx], savedM);
+          else MAT.push(savedM);
+        });
+        if(raw.connects) {
+          Object.entries(raw.connects).forEach(([no,c])=>{
+            if(AREAS[no] && c) {
+              const migrated = {};
+              ['north','east','south','west'].forEach(d=>{
+                const v = c[d];
+                if(Array.isArray(v)) migrated[d] = v;
+                else if(v) migrated[d] = [String(v)];
+                else migrated[d] = [];
+              });
+              AREAS[no].connects = migrated;
+            }
+          });
+        }
+        saveToLocal();
+        showToast('☁️ GitHub 데이터 로드 완료!');
+      } else if (hadSaved) {
+        showToast('✅ 저장된 데이터 불러옴');
+      }
+    } else if (hadSaved) {
+      showToast('✅ 저장된 데이터 불러옴');
+    }
+  } catch(e) {
+    if (hadSaved) showToast('✅ 저장된 데이터 불러옴');
+  }
+  renderMap();renderMats();renderSpells();
 }
 initLoad();
 </script>
