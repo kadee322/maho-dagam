@@ -274,6 +274,7 @@ main{position:relative;z-index:5;padding:24px 20px 60px;max-width:1400px;margin:
   padding:8px 14px;background:rgba(40,50,40,.4);
   border-bottom:1px solid rgba(100,180,100,.2);
   font-size:11px;color:rgba(245,234,214,.6);
+  position:relative;z-index:20;
 }
 .github-bar input{
   flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(100,180,100,.3);
@@ -768,16 +769,18 @@ document.addEventListener('click', e => {
     const t = document.getElementById('gh-token').value.trim();
     if (!t) return;
     localStorage.setItem(GH_TOKEN_KEY, t);
-    document.getElementById('gh-token').value = '';
-    document.getElementById('gh-status').textContent = '✅ 토큰 저장됨';
+    document.getElementById('gh-token').style.display='none';
+    document.getElementById('gh-save-token').style.display='none';
+    document.getElementById('gh-status').textContent = '🔑 토큰 등록됨';
     document.getElementById('gh-status').className = 'github-status ok';
-    setTimeout(()=>document.getElementById('gh-status').textContent='', 3000);
   }
 });
 
 // 페이지 로드시 토큰 있으면 표시
 window.addEventListener('load', ()=>{
   if(getToken()) {
+    document.getElementById('gh-token').style.display='none';
+    document.getElementById('gh-save-token').style.display='none';
     document.getElementById('gh-status').textContent = '🔑 토큰 등록됨';
     document.getElementById('gh-status').className = 'github-status ok';
   }
