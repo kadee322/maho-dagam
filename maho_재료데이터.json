@@ -633,7 +633,7 @@
     "id": "데릭=아데아",
     "type": "동물",
     "effect": "강화조장",
-    "location": "",
+    "location": "12",
     "season": "연중",
     "desc": "박쥐의 이빨.",
     "hint": ""
