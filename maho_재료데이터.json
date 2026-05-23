@@ -442,10 +442,10 @@
   },
   {
     "id": "팔팔모니암",
-    "type": "식물",
+    "type": "나무 열매",
     "effect": "물리안정",
-    "location": "",
-    "season": "연중",
+    "location": "22",
+    "season": "풍",
     "desc": "남쪽 초원에 흔함.",
     "hint": ""
   },
