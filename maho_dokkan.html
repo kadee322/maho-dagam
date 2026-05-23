@@ -268,6 +268,22 @@ main{position:relative;z-index:5;padding:24px 20px 60px;max-width:1400px;margin:
 .loc-tag{background:var(--gold);color:var(--bg);font-size:10px;padding:2px 8px;
   border-radius:2px;cursor:pointer;display:flex;align-items:center;gap:4px;}
 .loc-tag::after{content:'×';opacity:.7;}
+
+.github-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;background:rgba(40,50,40,.4);
+  border-bottom:1px solid rgba(100,180,100,.2);
+  font-size:11px;color:rgba(245,234,214,.6);
+}
+.github-bar input{
+  flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(100,180,100,.3);
+  color:var(--parch);padding:4px 8px;border-radius:2px;
+  font-family:inherit;font-size:11px;outline:none;
+}
+.github-bar input:focus{border-color:rgba(100,180,100,.7)}
+.github-status{font-size:10px;white-space:nowrap;}
+.github-status.ok{color:#6ab46a}
+.github-status.err{color:#d97757}
 </style>
 </head>
 <body>
@@ -275,6 +291,12 @@ main{position:relative;z-index:5;padding:24px 20px 60px;max-width:1400px;margin:
   <div class="logo-title">마법전서</div>
   <div class="logo-sub">마법사가 되는방법 · 도감</div>
 </header>
+<div class="github-bar">
+  <span>☁️ GitHub 토큰:</span>
+  <input type="password" id="gh-token" placeholder="ghp_xxxxx (한 번만 입력하면 저장됨)"/>
+  <button class="filter-btn" id="gh-save-token" style="font-size:10px;padding:4px 10px">저장</button>
+  <span class="github-status" id="gh-status"></span>
+</div>
 <nav>
   <button class="nav-btn on" data-page="map">🗺 맵 & 채집</button>
   <button class="nav-btn" data-page="materials">🌿 마법재료</button>
@@ -633,6 +655,7 @@ document.addEventListener('click', e => {
     document.getElementById('edit-modal').classList.remove('on');
     document.getElementById('modal').classList.remove('on');
     saveToLocal();
+    saveToGitHub();
     showToast('✅ 저장됨');
     renderMats();renderMap();
     setTimeout(()=>showMatModal(m.id),100);
@@ -729,6 +752,85 @@ document.addEventListener('change', e => {
     e.target.value = '';
   }
 });
+
+
+// GitHub 설정
+const GH_USER = 'kadee322';
+const GH_REPO = 'maho-dagam';
+const GH_FILE = 'maho_재료데이터.json';
+const GH_TOKEN_KEY = 'maho_gh_token';
+
+function getToken() { return localStorage.getItem(GH_TOKEN_KEY)||''; }
+
+// 토큰 저장 버튼
+document.addEventListener('click', e => {
+  if (e.target.id === 'gh-save-token') {
+    const t = document.getElementById('gh-token').value.trim();
+    if (!t) return;
+    localStorage.setItem(GH_TOKEN_KEY, t);
+    document.getElementById('gh-token').value = '';
+    document.getElementById('gh-status').textContent = '✅ 토큰 저장됨';
+    document.getElementById('gh-status').className = 'github-status ok';
+    setTimeout(()=>document.getElementById('gh-status').textContent='', 3000);
+  }
+});
+
+// 페이지 로드시 토큰 있으면 표시
+window.addEventListener('load', ()=>{
+  if(getToken()) {
+    document.getElementById('gh-status').textContent = '🔑 토큰 등록됨';
+    document.getElementById('gh-status').className = 'github-status ok';
+  }
+});
+
+// GitHub에 JSON 저장
+async function saveToGitHub() {
+  const token = getToken();
+  if (!token) {
+    showToast('⚠️ 토큰을 먼저 입력해주세요');
+    return;
+  }
+  const ghStatus = document.getElementById('gh-status');
+  ghStatus.textContent = '☁️ 저장 중...';
+  ghStatus.className = 'github-status';
+  try {
+    // 현재 파일 SHA 가져오기
+    const getRes = await fetch(
+      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
+      { headers: { 'Authorization': 'token ' + token } }
+    );
+    const getJson = await getRes.json();
+    const sha = getJson.sha;
+
+    // 파일 업데이트
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(MAT, null, 2))));
+    const putRes = await fetch(
+      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'token ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: '재료 데이터 업데이트',
+          content: content,
+          sha: sha
+        })
+      }
+    );
+    if (putRes.ok) {
+      ghStatus.textContent = '☁️ GitHub 저장 완료!';
+      ghStatus.className = 'github-status ok';
+      setTimeout(()=>{ghStatus.textContent='🔑 토큰 등록됨';}, 3000);
+    } else {
+      throw new Error('저장 실패');
+    }
+  } catch(e) {
+    ghStatus.textContent = '❌ 저장 실패';
+    ghStatus.className = 'github-status err';
+  }
+}
 
 // GitHub JSON URL
 const GITHUB_JSON = 'https://kadee322.github.io/maho-dagam/maho_재료데이터.json';
