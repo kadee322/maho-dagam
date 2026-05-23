@@ -461,21 +461,8 @@ function setConnects(no, connects) {
   saveAreaConnects();
 }
 // AREAS connects를 localStorage에 저장
-function saveAreaConnects() {
-  const data = {};
-  Object.entries(AREAS).forEach(([no,a])=>{ if(a.connects) data[no]=a.connects; });
-  try { localStorage.setItem('maho_connects', JSON.stringify(data)); } catch(e){}
-}
-function loadAreaConnects() {
-  try {
-    const saved = localStorage.getItem('maho_connects');
-    if(!saved) return;
-    const data = JSON.parse(saved);
-    Object.entries(data).forEach(([no,connects])=>{
-      if(AREAS[no]) AREAS[no].connects = connects;
-    });
-  } catch(e){}
-}
+function saveAreaConnects() { saveToLocal(); }
+function loadAreaConnects() { /* loadFromLocal에서 처리 */ }
 
 function renderMap(){
   const nav=document.getElementById('region-nav');
@@ -865,7 +852,7 @@ const STORAGE_KEY = 'maho_mat_edits_v1';
 function saveToLocal() {
   // 원본 데이터와 다른 것만 저장 (변경된 항목의 id → 전체 객체)
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(MAT));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({materials:MAT, connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))}));
   } catch(e) { console.warn('localStorage 저장 실패', e); }
 }
 
@@ -875,19 +862,26 @@ function loadFromLocal() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return false;
     const parsed = JSON.parse(saved);
-    // MAT 배열 내용 업데이트
-    parsed.forEach(savedM => {
+    const matList = Array.isArray(parsed) ? parsed : (parsed.materials || []);
+    matList.forEach(savedM => {
       const idx = MAT.findIndex(m => m.id === savedM.id);
       if (idx >= 0) Object.assign(MAT[idx], savedM);
       else MAT.push(savedM);
     });
+    // connects 복원
+    if(parsed.connects) {
+      Object.entries(parsed.connects).forEach(([no,c])=>{
+        if(AREAS[no] && c) AREAS[no].connects = c;
+      });
+    }
     return true;
   } catch(e) { return false; }
 }
 
 // JSON 파일로 내보내기
 function exportJSON() {
-  const blob = new Blob([JSON.stringify(MAT, null, 2)], {type:'application/json'});
+  const exportData = {materials:MAT, connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))};
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'maho_재료데이터.json';
@@ -918,6 +912,11 @@ function importJSON(file) {
         if (idx >= 0) Object.assign(MAT[idx], savedM);
         else MAT.push(savedM);
       });
+      if(raw.connects) {
+        Object.entries(raw.connects).forEach(([no,c])=>{
+          if(AREAS[no] && c) AREAS[no].connects = c;
+        });
+      }
       saveToLocal();
       renderMats(); renderMap();
       showToast('📂 ' + list.length + '개 재료 데이터 불러오기 완료!');
@@ -1006,7 +1005,8 @@ async function saveToGitHub() {
     const sha = getJson.sha;
 
     // 파일 업데이트
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(MAT, null, 2))));
+    const saveData = {materials:MAT, connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))};
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(saveData, null, 2))));
     const putRes = await fetch(
       `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
       {
@@ -1096,6 +1096,12 @@ async function initLoad() {
           if (idx >= 0) Object.assign(MAT[idx], savedM);
           else MAT.push(savedM);
         });
+        // connects 복원
+        if(raw.connects) {
+          Object.entries(raw.connects).forEach(([no,c])=>{
+            if(AREAS[no] && c) AREAS[no].connects = c;
+          });
+        }
         saveToLocal();
         showToast('☁️ GitHub 데이터 로드 완료!');
       } else if (hadSaved) {
