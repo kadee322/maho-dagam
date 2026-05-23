@@ -3,329 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>마법전서 도감 — 마법사가 되는방법</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>마법전서 도감</title>
 <style>
-:root{
-  --parch:#f5ead6;--parch2:#ede0c4;--parch3:#e0cfa8;
-  --ink:#2a1f0e;--ink2:#4a3520;--ink3:#6b4e2a;
-  --gold:#9a6f2a;--gold2:#c4922a;--gold3:#e8b84a;
-  --red:#8b2020;--bg:#1a1208;
-  --shadow:rgba(42,31,14,.2);--glow:rgba(200,150,50,.25);
-}
+:root{--parch:#f5ead6;--parch2:#ede0c4;--parch3:#e0cfa8;--ink:#2a1f0e;--ink2:#4a3520;--ink3:#6b4e2a;--gold:#9a6f2a;--gold2:#c4922a;--gold3:#e8b84a;--red:#8b2020;--bg:#1a1208;--dim:#9a8f80;--shadow:rgba(42,31,14,.2);--glow:rgba(200,150,50,.25)}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;min-height:100vh;
-  background-image:radial-gradient(ellipse at 20% 20%,rgba(120,80,20,.3) 0%,transparent 60%),
-  radial-gradient(ellipse at 80% 80%,rgba(20,40,80,.3) 0%,transparent 60%);}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");opacity:.4;}
-header{position:relative;z-index:10;text-align:center;padding:36px 20px 0;
-  background:linear-gradient(180deg,rgba(26,18,8,1) 0%,rgba(26,18,8,0) 100%);}
-.logo-title{font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;font-size:clamp(22px,4vw,42px);color:var(--gold3);
-  letter-spacing:.12em;text-shadow:0 0 30px var(--glow),0 2px 8px rgba(0,0,0,.8);margin-bottom:4px;}
-.logo-sub{13px;color:var(--gold);letter-spacing:.3em;text-transform:uppercase;margin-bottom:18px;}
-nav{display:flex;justify-content:center;position:relative;border-bottom:2px solid var(--gold);position:relative;z-index:10;
-  background:rgba(26,18,8,.9);backdrop-filter:blur(10px);padding:0 20px;}
-.nav-btn{background:transparent;border:none;font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;font-size:18px;letter-spacing:.1em;
-  color:var(--gold);padding:13px 26px;cursor:pointer;border-bottom:3px solid transparent;
-  margin-bottom:-2px;transition:all .25s;white-space:nowrap;}
-.nav-btn:hover{color:var(--gold3);background:rgba(255,200,80,.06)}
-.nav-btn.on{color:var(--gold3);border-bottom-color:var(--gold3);background:rgba(255,200,80,.08)}
-main{position:relative;z-index:5;padding:24px 20px 60px;max-width:1400px;margin:0 auto}
+body{background:var(--bg);color:var(--ink);font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic',sans-serif;min-height:100vh;background-image:radial-gradient(ellipse at 20% 20%,rgba(120,80,20,.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(20,40,80,.3) 0%,transparent 60%)}
+header{text-align:center;padding:36px 20px 0;background:linear-gradient(180deg,rgba(26,18,8,1) 0%,rgba(26,18,8,0) 100%)}
+.logo-title{font-size:clamp(22px,4vw,42px);color:var(--gold3);letter-spacing:.12em;text-shadow:0 0 30px var(--glow),0 2px 8px rgba(0,0,0,.8);margin-bottom:4px;font-weight:700}
+.logo-sub{font-size:11px;color:var(--gold);letter-spacing:.3em;margin-bottom:18px}
+nav{display:flex;justify-content:center;border-bottom:2px solid var(--gold);position:relative;background:rgba(26,18,8,.9);padding:0 20px}
+.nav-btn{background:transparent;border:none;font-size:18px;letter-spacing:.1em;color:var(--gold);padding:13px 26px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .25s;white-space:nowrap;font-family:inherit}
+.nav-btn:hover{color:var(--gold3)}
+.nav-btn.on{color:var(--gold3);border-bottom-color:var(--gold3)}
+#gh-bar{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:6px}
+#gh-token{background:rgba(255,255,255,.07);border:1px solid rgba(200,150,50,.3);color:var(--parch);padding:4px 8px;border-radius:2px;font-size:11px;outline:none;width:120px;font-family:inherit}
+#gh-save-token{background:transparent;border:none;color:var(--gold);font-size:11px;cursor:pointer;font-family:inherit}
+#gh-status{font-size:13px;color:#6ab46a;cursor:pointer}
+main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 .page{display:none}.page.on{display:block}
-.sec-title{font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;19px;color:var(--gold3);letter-spacing:.15em;
-  margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--gold);
-  display:flex;align-items:center;gap:10px;}
-.sec-title::before{content:'✦';13px;color:var(--gold)}
-.ornament{text-align:center;color:var(--gold);13px;letter-spacing:.4em;margin:8px 0 18px;opacity:.5;}
-.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;align-items:center;}
-.filter-bar input{flex:1;min-width:150px;background:rgba(245,234,214,.1);border:1px solid var(--gold);
-  color:var(--parch);padding:8px 13px;border-radius:2px;font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;15px;outline:none;}
-.filter-bar input::placeholder{color:rgba(245,234,214,.35)}
-.filter-bar input:focus{border-color:var(--gold3);background:rgba(245,234,214,.15)}
-.filter-btn{background:rgba(245,234,214,.08);border:1px solid var(--gold);color:var(--parch2);
-  padding:7px 13px;border-radius:2px;font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;13px;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.filter-btn:hover,.filter-btn.on{background:var(--gold);color:var(--bg)}
-
-/* ── 재료 카드 (도감 스타일) ── */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px;}
-.mat-card{
-  background:var(--parch);border-radius:3px;overflow:hidden;cursor:pointer;
-  transition:transform .2s,box-shadow .2s;
-  box-shadow:0 4px 18px var(--shadow),inset 0 0 0 1px rgba(200,150,50,.3);
-  position:relative;
-}
-.mat-card:hover{transform:translateY(-4px);box-shadow:0 10px 32px var(--shadow),0 0 0 2px var(--gold2),inset 0 0 0 1px rgba(200,150,50,.5);}
-
-/* 도감 이미지 영역 */
-.mat-img-wrap{
-  width:100%;aspect-ratio:1;position:relative;overflow:hidden;
-  background:var(--parch2);
-  border-bottom:2px solid var(--parch3);
-}
-/* 오래된 종이 테두리 효과 */
-.mat-img-wrap::before{
-  content:'';position:absolute;inset:6px;z-index:2;pointer-events:none;
-  border:1px solid rgba(120,80,20,.25);
-  box-shadow:inset 0 0 12px rgba(120,80,20,.12);
-}
-/* 모서리 장식 */
-.mat-img-wrap::after{
-  content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
-  background:
-    linear-gradient(135deg,rgba(200,150,50,.15) 0%,transparent 30%),
-    linear-gradient(225deg,rgba(200,150,50,.1) 0%,transparent 25%),
-    linear-gradient(315deg,rgba(200,150,50,.1) 0%,transparent 25%),
-    linear-gradient(45deg,rgba(200,150,50,.1) 0%,transparent 25%);
-}
-.mat-img{
-  width:100%;height:100%;object-fit:contain;
-  padding:10px;
-  image-rendering:pixelated;
-  filter:sepia(.15) contrast(1.05);
-}
-.mat-img-placeholder{
-  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  50px;opacity:.5;
-}
-/* 넘버링 배지 */
-.mat-no{
-  position:absolute;top:6px;left:6px;z-index:4;
-  background:rgba(0,0,0,.45);color:rgba(255,255,255,.75);
-  font-size:11px;font-weight:700;font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;
-  padding:2px 5px;border-radius:1px;
-}
-.mat-card-body{padding:10px 12px 12px;}
-.mat-name{14px;font-weight:700;color:var(--ink);margin-bottom:7px;line-height:1.4;
-  text-align:center;border-bottom:1px solid var(--parch3);padding-bottom:7px;}
-.mat-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;justify-content:center;}
-.tag{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700;letter-spacing:.04em;}
-.tag-effect-변이혼돈{background:#3a1a5a;color:#d4a0ff}
-.tag-effect-정신안정{background:#1a3a5a;color:#90c0ff}
-.tag-effect-물리안정{background:#1a3a2a;color:#80d080}
-.tag-effect-강화조장{background:#5a3a0a;color:#ffc060}
-.tag-effect-중화안정{background:#3a3a1a;color:#e0e080}
-.tag-effect-환각{background:#5a1a1a;color:#ff9090}
+.sec-title{font-size:17px;color:var(--gold3);letter-spacing:.15em;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--gold)}
+.data-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px}
+.data-btn{background:rgba(245,234,214,.08);border:1px solid rgba(200,150,50,.4);color:var(--parch2);padding:6px 14px;border-radius:2px;font-size:12px;cursor:pointer;font-family:inherit}
+.data-btn:hover{background:rgba(200,150,50,.2)}
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;align-items:center}
+.filter-bar input{flex:1;min-width:150px;background:rgba(245,234,214,.1);border:1px solid var(--gold);color:var(--parch);padding:8px 13px;border-radius:2px;font-size:13px;outline:none;font-family:inherit}
+.sel{background:rgba(245,234,214,.1);border:1px solid var(--gold);color:var(--parch);padding:7px 28px 7px 13px;border-radius:2px;font-size:13px;outline:none;cursor:pointer;font-family:inherit;appearance:none}
+.sel option{background:#1a1208}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px}
+.mat-card{background:var(--parch);border-radius:3px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 18px var(--shadow),inset 0 0 0 1px rgba(200,150,50,.3);position:relative}
+.mat-card:hover{transform:translateY(-4px);box-shadow:0 10px 32px var(--shadow),0 0 0 2px var(--gold2)}
+.mat-img-wrap{width:100%;aspect-ratio:1;position:relative;overflow:hidden;background:var(--parch2);border-bottom:2px solid var(--parch3)}
+.mat-img-wrap::before{content:'';position:absolute;inset:6px;z-index:2;pointer-events:none;border:1px solid rgba(120,80,20,.25)}
+.mat-img{width:100%;height:100%;object-fit:contain;padding:10px;image-rendering:pixelated;filter:sepia(.15) contrast(1.05)}
+.mat-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;opacity:.5}
+.mat-no{position:absolute;top:6px;left:6px;z-index:4;background:rgba(0,0,0,.45);color:rgba(255,255,255,.75);font-size:11px;font-weight:700;padding:2px 5px;border-radius:1px}
+.mat-card-body{padding:10px 12px 12px}
+.mat-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:7px;line-height:1.4;text-align:center;border-bottom:1px solid var(--parch3);padding-bottom:7px}
+.mat-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;justify-content:center}
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700}
+.tag-effect-변이혼돈{background:#3a1a5a;color:#d4a0ff}.tag-effect-정신안정{background:#1a3a5a;color:#90c0ff}.tag-effect-물리안정{background:#1a3a2a;color:#80d080}.tag-effect-강화조장{background:#5a3a0a;color:#ffc060}.tag-effect-중화안정{background:#3a3a1a;color:#e0e080}.tag-effect-환각{background:#5a1a1a;color:#ff9090}.tag-effect-미확인{background:rgba(42,31,14,.12);color:var(--ink3)}
 .tag-type{background:rgba(42,31,14,.1);color:var(--ink2)}
-.mat-loc{font-size:10px;color:var(--ink3);text-align:center;display:flex;align-items:center;justify-content:center;gap:3px;}
-.mat-loc::before{content:'📍';11px}
-
-/* ── 마법 카드 ── */
-.spell-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
-.spell-card{background:var(--parch);border-radius:2px;padding:16px;cursor:pointer;
-  transition:transform .2s,box-shadow .2s;
-  box-shadow:0 4px 16px var(--shadow),inset 0 0 0 1px rgba(200,150,50,.25);}
-.spell-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px var(--shadow),0 0 0 1px var(--gold)}
-.spell-name{16px;font-weight:700;color:var(--ink);margin-bottom:6px}
-.spell-cat{display:inline-block;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:10px;font-weight:700;letter-spacing:.06em;}
-.cat-공격{background:#5a1a1a;color:#ffb0b0}.cat-탐색{background:#1a3a5a;color:#a0c8ff}
-.cat-짐승{background:#2a3a1a;color:#a0d080}.cat-대화{background:#3a2a5a;color:#c0a8ff}
-.cat-자연변화{background:#1a4a2a;color:#80e0a0}.cat-창조{background:#4a3a0a;color:#ffe080}
-.cat-주술{background:#4a1a3a;color:#ffb0e0}.cat-변이{background:#2a2a4a;color:#b0b0ff}
-.spell-effect{13px;color:var(--ink2);margin-bottom:12px}
+.mat-loc{font-size:10px;color:var(--ink3);text-align:center}
+.mat-hint{font-size:10px;color:var(--gold);margin-top:4px;overflow:hidden;max-height:3em;line-height:1.5}
+.mat-desc{font-size:11px;color:var(--ink3);margin-top:5px;overflow:hidden;max-height:3em;line-height:1.5}
+.spell-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.spell-card{background:var(--parch);border-radius:2px;padding:16px;cursor:pointer;transition:transform .2s;box-shadow:0 4px 16px var(--shadow),inset 0 0 0 1px rgba(200,150,50,.25)}
+.spell-card:hover{transform:translateY(-3px)}
+.spell-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.spell-cat{display:inline-block;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:10px;font-weight:700}
+.cat-공격{background:#5a1a1a;color:#ffb0b0}.cat-탐색{background:#1a3a5a;color:#a0c8ff}.cat-짐승{background:#2a3a1a;color:#a0d080}.cat-대화{background:#3a2a5a;color:#c0a8ff}.cat-자연변화{background:#1a4a2a;color:#80e0a0}.cat-창조{background:#4a3a0a;color:#ffe080}.cat-주술{background:#4a1a3a;color:#ffb0e0}.cat-변이{background:#2a2a4a;color:#b0b0ff}
+.spell-effect{font-size:11px;color:var(--ink2);margin-bottom:12px}
 .recipe-list{display:flex;flex-direction:column;gap:4px}
-.recipe-item{display:flex;align-items:center;gap:8px;13px;color:var(--ink);
-  background:rgba(42,31,14,.06);padding:5px 8px;border-radius:2px;cursor:pointer;transition:background .15s;}
+.recipe-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink);background:rgba(42,31,14,.06);padding:5px 8px;border-radius:2px;cursor:pointer}
 .recipe-item:hover{background:rgba(42,31,14,.14)}
-.recipe-num{width:17px;height:17px;border-radius:50%;background:transparent;color:var(--ink);
-  display:flex;align-items:center;justify-content:center;11px;font-weight:700;flex-shrink:0;}
+.recipe-num{width:17px;height:17px;border-radius:50%;background:transparent;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
 .recipe-mat{flex:1;font-weight:600}
-.recipe-how{font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(42,31,14,.1);color:var(--ink3);}
-.recipe-thumb{width:22px;height:22px;object-fit:contain;border-radius:1px;background:var(--parch2);flex-shrink:0;image-rendering:pixelated;}
-
-/* ── 맵 ── */
-.map-layout{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start;}
-@media(max-width:700px){.map-layout{grid-template-columns:1fr}}
-.region-nav{display:flex;flex-direction:column;gap:5px;}
-.region-btn{display:flex;align-items:center;gap:9px;background:rgba(245,234,214,.07);
-  border:1px solid rgba(200,150,50,.25);color:var(--parch2);padding:9px 13px;border-radius:2px;
-  cursor:pointer;font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;14px;transition:all .18s;text-align:left;}
+.recipe-how{font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(42,31,14,.1);color:var(--ink3)}
+.map-layout{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
+.region-nav{display:flex;flex-direction:column;gap:5px;max-height:80vh;overflow-y:auto}
+.region-group-title{font-size:10px;color:var(--gold);letter-spacing:.15em;padding:10px 13px 4px;opacity:.7}
+.region-btn{display:flex;align-items:center;gap:9px;background:rgba(245,234,214,.07);border:1px solid rgba(200,150,50,.25);color:var(--parch2);padding:9px 13px;border-radius:2px;cursor:pointer;font-size:12px;text-align:left;font-family:inherit}
 .region-btn:hover,.region-btn.on{background:rgba(245,234,214,.14);border-color:var(--gold);color:var(--parch)}
 .region-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.region-count{margin-left:auto;12px;color:var(--gold);opacity:.65}
-.map-detail{background:rgba(245,234,214,.05);border:1px solid rgba(200,150,50,.18);border-radius:2px;padding:18px;}
-.map-detail-header{margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid rgba(200,150,50,.18);}
-.map-region-name{font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;19px;color:var(--gold3);margin-bottom:5px;}
-.map-region-desc{14px;color:rgba(245,234,214,.65);line-height:1.6}
-.map-mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
-.map-mat-item{background:rgba(245,234,214,.07);border:1px solid rgba(200,150,50,.14);
-  border-radius:2px;padding:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;}
-.map-mat-item:hover{background:rgba(245,234,214,.13);border-color:var(--gold)}
-.map-mat-thumb{width:32px;height:32px;object-fit:contain;flex-shrink:0;background:rgba(245,234,214,.1);
-  border-radius:1px;image-rendering:pixelated;}
-.map-mat-info{}
-.map-mat-name{13px;font-weight:700;color:var(--parch)}
-.map-mat-sub{11px;color:rgba(245,234,214,.45);margin-top:2px}
-
-/* ── 모달 ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:100;
-  display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-.modal-overlay.on{display:flex}
-.modal-box{background:var(--parch);border:2px solid var(--gold);border-radius:3px;
-  max-width:500px;width:100%;max-height:90vh;overflow-y:auto;padding:26px;position:relative;
-  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 0 4px rgba(200,150,50,.12);}
-.modal-box::-webkit-scrollbar{width:5px}
-.modal-box::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
-.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;22px;color:var(--ink3);cursor:pointer;}
-.modal-close:hover{color:var(--red)}
-/* 모달 이미지 */
-.modal-img-frame{
-  width:140px;height:140px;margin:0 auto 16px;position:relative;
-  background:var(--parch2);border:1px solid var(--parch3);
-}
-.modal-img-frame::before{content:'';position:absolute;inset:5px;border:1px solid rgba(120,80,20,.2);pointer-events:none;z-index:1;}
-.modal-img-frame::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
-  background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 50%);}
-.modal-img-frame img{width:100%;height:100%;object-fit:contain;padding:12px;image-rendering:pixelated;filter:sepia(.1) contrast(1.05);}
-.modal-img-frame .placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;58px;opacity:.4;}
-.modal-title{font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;21px;color:var(--ink);margin-bottom:5px;text-align:center;}
-.modal-sub{13px;color:var(--ink3);margin-bottom:13px;text-align:center;letter-spacing:.05em;}
-.modal-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;justify-content:center;}
-.modal-section{margin-bottom:14px;}
-.modal-section h4{13px;color:var(--gold);letter-spacing:.1em;margin-bottom:7px;
-  text-transform:uppercase;border-bottom:1px solid var(--parch3);padding-bottom:4px;}
-.modal-section p{14px;color:var(--ink2);line-height:1.7;}
-.related-list{display:flex;flex-direction:column;gap:5px;}
-.related-item{background:var(--parch2);border:1px solid var(--parch3);border-radius:2px;padding:7px 11px;
-  14px;color:var(--ink);cursor:pointer;transition:background .15s;}
-.related-item:hover{background:var(--parch3)}
-.divider{height:1px;background:var(--parch3);margin:13px 0;}
-.no-result{color:rgba(245,234,214,.35);15px;text-align:center;padding:40px 0;}
-@media(max-width:500px){.card-grid{grid-template-columns:repeat(2,1fr)}}
-
-/* ── 드롭박스 ── */
-.select-wrap{position:relative;display:inline-flex;align-items:center;}
-.sel{
-  background:rgba(245,234,214,.1);border:1px solid var(--gold);
-  color:var(--parch);padding:7px 32px 7px 13px;border-radius:2px;
-  font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;font-size:13px;outline:none;cursor:pointer;
-  appearance:none;-webkit-appearance:none;
-}
-.sel:focus{border-color:var(--gold3)}
-.select-wrap::after{content:'▾';position:absolute;right:10px;pointer-events:none;color:var(--gold);font-size:12px;}
-.sel option{background:#1a1208;color:var(--parch);}
-
-/* ── 수정 모달 ── */
-.edit-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;
-  display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-.edit-modal-overlay.on{display:flex}
-.edit-box{background:var(--parch);border:2px solid var(--gold);border-radius:3px;
-  max-width:480px;width:100%;padding:26px;position:relative;
-  box-shadow:0 20px 60px rgba(0,0,0,.7);}
-.edit-box h3{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:18px;
-  padding-bottom:10px;border-bottom:1px solid var(--parch3);}
-.edit-field{margin-bottom:14px;}
-.edit-field label{display:block;font-size:12px;color:var(--ink3);margin-bottom:5px;font-weight:600;}
-.edit-field input,.edit-field textarea,.edit-field select{
-  width:100%;background:var(--parch2);border:1px solid var(--parch3);
-  color:var(--ink);padding:8px 10px;border-radius:2px;
-  font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;font-size:13px;outline:none;}
-.edit-field input:focus,.edit-field textarea:focus{border-color:var(--gold)}
-.edit-field textarea{resize:vertical;min-height:70px;}
-.edit-field select{appearance:none;cursor:pointer;}
-.edit-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
-.edit-save{background:var(--gold);border:none;color:var(--bg);padding:9px 20px;
-  border-radius:2px;cursor:pointer;font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;font-size:13px;font-weight:700;}
-.edit-save:hover{background:var(--gold2)}
-.edit-cancel{background:transparent;border:1px solid var(--parch3);color:var(--ink2);
-  padding:9px 16px;border-radius:2px;cursor:pointer;font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;font-size:13px;}
-.edit-cancel:hover{border-color:var(--ink2)}
-/* 수정 버튼 (모달 내) */
-.btn-edit{
-  background:transparent;border:1px solid var(--gold);color:var(--gold);
-  padding:5px 14px;border-radius:2px;cursor:pointer;
-  font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;font-size:12px;margin-top:12px;
-  display:block;width:100%;transition:all .2s;
-}
-.btn-edit:hover{background:var(--gold);color:var(--bg)}
-
-/* ── 데이터 저장/불러오기 버튼 ── */
-.data-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px;}
-.data-btn{
-  background:rgba(245,234,214,.08);border:1px solid rgba(200,150,50,.4);
-  color:var(--parch2);padding:6px 14px;border-radius:2px;
-  font-family:'Apple SD Gothic Neo','맑은 고딕','Malgun Gothic','나눔고딕',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;
-}
-.data-btn:hover{background:rgba(200,150,50,.2);border-color:var(--gold);color:var(--parch)}
-.data-btn.import{border-color:rgba(100,180,100,.4);color:rgba(160,220,160,.8);}
-.data-btn.import:hover{background:rgba(100,180,100,.15);border-color:#6ab46a;}
-.toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  background:var(--ink);color:var(--parch);padding:10px 20px;border-radius:3px;
-  font-size:13px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;
-  border:1px solid var(--gold);white-space:nowrap;
-}
-.toast.show{opacity:1}
-
-.region-group-title{font-size:10px;color:var(--gold);letter-spacing:.15em;
-  padding:10px 13px 4px;text-transform:uppercase;opacity:.7;}
-.region-no{font-size:10px;color:var(--gold);margin-right:4px;opacity:.7;}
-.loc-drop-item{padding:7px 12px;font-size:12px;color:var(--ink);cursor:pointer;
-  border-bottom:1px solid var(--parch3);display:flex;align-items:center;gap:8px;}
-.loc-drop-item:hover{background:var(--parch2)}
-.loc-drop-no{font-size:10px;color:var(--gold);min-width:20px;}
-.loc-tag{background:var(--gold);color:var(--bg);font-size:10px;padding:2px 8px;
-  border-radius:2px;cursor:pointer;display:flex;align-items:center;gap:4px;}
-.loc-tag::after{content:'×';opacity:.7;}
-
-
-/* ── 맵 상세 새 레이아웃 ── */
-.map-detail-body{display:grid;grid-template-columns:4fr 6fr;gap:16px;align-items:start;}
-@media(max-width:900px){.map-detail-body{grid-template-columns:1fr}}
-
-/* 연결 맵 패널 */
-.map-connects-panel{background:rgba(245,234,214,.04);border:1px solid rgba(200,150,50,.15);border-radius:2px;padding:14px;}
-.map-connects-title{font-size:11px;color:var(--gold);letter-spacing:.1em;margin-bottom:10px;text-transform:uppercase;}
-.connect-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.connect-slot{
-  background:rgba(245,234,214,.06);border:1px solid rgba(200,150,50,.2);
-  border-radius:2px;padding:10px;text-align:center;min-height:64px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  cursor:pointer;transition:all .15s;position:relative;
-}
+.region-no{font-size:10px;color:var(--gold);opacity:.7}
+.region-count{margin-left:auto;font-size:10px;color:var(--gold);opacity:.65}
+.map-detail{background:rgba(245,234,214,.05);border:1px solid rgba(200,150,50,.18);border-radius:2px;padding:18px;min-height:200px}
+.map-region-name{font-size:17px;color:var(--gold3);margin-bottom:5px}
+.map-detail-body{display:grid;grid-template-columns:4fr 6fr;gap:16px;align-items:start;margin-top:14px}
+.map-connects-panel{background:rgba(245,234,214,.04);border:1px solid rgba(200,150,50,.15);border-radius:2px;padding:14px}
+.map-connects-title{font-size:11px;color:var(--gold);letter-spacing:.1em;margin-bottom:10px}
+.connect-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.connect-slot{background:rgba(245,234,214,.06);border:1px solid rgba(200,150,50,.2);border-radius:2px;padding:10px;text-align:center;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;position:relative}
 .connect-slot:hover{background:rgba(245,234,214,.12);border-color:var(--gold)}
-.connect-slot.empty{border-style:dashed;opacity:.5;cursor:default;}
-.connect-slot.filled{border-color:rgba(200,150,50,.4);}
-.connect-slot.filled:hover{border-color:var(--gold3);}
-.connect-dir{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.1em;}
-.connect-name{font-size:11px;color:var(--parch);line-height:1.3;}
-.connect-no{font-size:9px;color:var(--dim);margin-top:2px;}
-.connect-add{font-size:18px;color:rgba(200,150,50,.4);}
-.connect-del{position:absolute;top:4px;right:5px;font-size:11px;color:var(--dim);
-  background:none;border:none;cursor:pointer;padding:0;line-height:1;}
+.connect-slot.empty{border-style:dashed;opacity:.5}
+.connect-dir{font-size:10px;color:var(--gold);font-weight:700}
+.connect-name{font-size:11px;color:var(--parch);line-height:1.3}
+.connect-add{font-size:18px;color:rgba(200,150,50,.4)}
+.connect-del{position:absolute;top:4px;right:5px;font-size:11px;color:var(--dim);background:none;border:none;cursor:pointer;line-height:1}
 .connect-del:hover{color:var(--red)}
-
-/* 채집 재료 카드 - 세로 정렬 */
-.map-mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;}
-.map-mat-item{
-  background:rgba(245,234,214,.07);border:1px solid rgba(200,150,50,.14);
-  border-radius:2px;padding:8px 6px;cursor:pointer;transition:all .15s;
-  display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;
-}
+.map-mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
+.map-mat-item{background:rgba(245,234,214,.07);border:1px solid rgba(200,150,50,.14);border-radius:2px;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
 .map-mat-item:hover{background:rgba(245,234,214,.13);border-color:var(--gold)}
-.map-mat-thumb{width:52px;height:52px;object-fit:contain;border-radius:1px;
-  background:rgba(245,234,214,.1);image-rendering:pixelated;}
-.map-mat-thumb-placeholder{width:52px;height:52px;display:flex;align-items:center;
-  justify-content:center;font-size:28px;background:rgba(245,234,214,.05);border-radius:1px;}
-.map-mat-name{font-size:10px;font-weight:700;color:var(--parch);line-height:1.3;}
-.map-mat-sub{font-size:9px;color:rgba(245,234,214,.4);}
-
-/* 연결 편집 모달 */
-.conn-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:150;
-  display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-.conn-modal-overlay.on{display:flex}
-.conn-box{background:var(--parch);border:2px solid var(--gold);border-radius:3px;
-  max-width:400px;width:100%;padding:22px;position:relative;}
-.conn-box h3{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;}
-.conn-search{width:100%;background:var(--parch2);border:1px solid var(--parch3);
-  color:var(--ink);padding:8px 10px;border-radius:2px;font-family:inherit;font-size:13px;outline:none;margin-bottom:8px;}
-.conn-search:focus{border-color:var(--gold)}
-.conn-results{max-height:200px;overflow-y:auto;border:1px solid var(--parch3);border-radius:2px;}
-.conn-result-item{padding:8px 12px;font-size:12px;color:var(--ink);cursor:pointer;
-  border-bottom:1px solid var(--parch3);display:flex;gap:8px;align-items:center;}
+.map-mat-thumb{width:52px;height:52px;object-fit:contain;background:rgba(245,234,214,.1);image-rendering:pixelated}
+.map-mat-thumb-ph{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:28px;background:rgba(245,234,214,.05)}
+.map-mat-name{font-size:10px;font-weight:700;color:var(--parch);line-height:1.3}
+.map-mat-sub{font-size:9px;color:rgba(245,234,214,.4)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.on{display:flex}
+.modal-box{background:var(--parch);border:2px solid var(--gold);border-radius:3px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;padding:26px;position:relative}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer}
+.modal-img-frame{width:140px;height:140px;margin:0 auto 16px;position:relative;background:var(--parch2);border:1px solid var(--parch3)}
+.modal-img-frame img{width:100%;height:100%;object-fit:contain;padding:12px;image-rendering:pixelated}
+.modal-img-frame .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:56px;opacity:.4}
+.modal-title{font-size:19px;color:var(--ink);margin-bottom:5px;text-align:center;font-weight:700}
+.modal-sub{font-size:11px;color:var(--ink3);margin-bottom:13px;text-align:center}
+.modal-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;justify-content:center}
+.modal-section{margin-bottom:14px}
+.modal-section h4{font-size:11px;color:var(--gold);letter-spacing:.1em;margin-bottom:7px;border-bottom:1px solid var(--parch3);padding-bottom:4px}
+.modal-section p{font-size:12px;color:var(--ink2);line-height:1.7}
+.btn-edit{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:5px 14px;border-radius:2px;cursor:pointer;font-size:12px;margin-top:12px;display:block;width:100%;font-family:inherit}
+.btn-edit:hover{background:var(--gold);color:var(--bg)}
+.related-item{background:var(--parch2);border:1px solid var(--parch3);border-radius:2px;padding:7px 11px;font-size:12px;color:var(--ink);cursor:pointer;margin-bottom:5px}
+.related-item:hover{background:var(--parch3)}
+.divider{height:1px;background:var(--parch3);margin:13px 0}
+.no-result{color:rgba(245,234,214,.35);font-size:13px;text-align:center;padding:40px 0}
+.edit-field{margin-bottom:14px}
+.edit-field label{display:block;font-size:12px;color:var(--ink3);margin-bottom:5px;font-weight:600}
+.edit-field input,.edit-field textarea,.edit-field select{width:100%;background:var(--parch2);border:1px solid var(--parch3);color:var(--ink);padding:8px 10px;border-radius:2px;font-size:13px;outline:none;font-family:inherit}
+.edit-field textarea{resize:vertical;min-height:70px}
+.edit-field select{appearance:none;cursor:pointer}
+.edit-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.edit-save{background:var(--gold);border:none;color:var(--bg);padding:9px 20px;border-radius:2px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.edit-cancel{background:transparent;border:1px solid var(--parch3);color:var(--ink2);padding:9px 16px;border-radius:2px;cursor:pointer;font-size:13px;font-family:inherit}
+.loc-tag{background:var(--gold);color:var(--bg);font-size:10px;padding:2px 8px;border-radius:2px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin:2px}
+.loc-tag::after{content:'×';opacity:.7}
+.conn-result-item{padding:8px 12px;font-size:12px;color:var(--ink);cursor:pointer;border-bottom:1px solid var(--parch3);display:flex;gap:8px}
 .conn-result-item:hover{background:var(--parch2)}
-.conn-result-no{font-size:10px;color:var(--gold);min-width:20px;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--parch);padding:10px 20px;border-radius:3px;font-size:13px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--gold)}
+.toast.show{opacity:1}
+@media(max-width:768px){.map-layout{grid-template-columns:1fr}.map-detail-body{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -334,87 +130,73 @@ main{position:relative;z-index:5;padding:24px 20px 60px;max-width:1400px;margin:
   <div class="logo-sub">마법사가 되는방법 · 도감</div>
 </header>
 <nav>
-  <div style="flex:1;display:flex;justify-content:center">
-    <button class="nav-btn on" data-page="map">🗺 맵 & 채집</button>
-    <button class="nav-btn" data-page="materials">🌿 마법재료</button>
-    <button class="nav-btn" data-page="spells">✨ 마법레시피</button>
-  </div>
-  <div id="gh-bar" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:6px;">
-    <span id="gh-status" style="font-size:11px;color:#6ab46a;white-space:nowrap;cursor:pointer" title="클릭하면 토큰 재입력"></span>
+  <button class="nav-btn on" data-page="map">🗺 맵 & 채집</button>
+  <button class="nav-btn" data-page="materials">🌿 마법재료</button>
+  <button class="nav-btn" data-page="spells">✨ 마법레시피</button>
+  <div id="gh-bar">
+    <span id="gh-status"></span>
     <div id="gh-input-wrap" style="display:flex;align-items:center;gap:6px">
-      <input type="password" id="gh-token" placeholder="GitHub 토큰"
-        style="background:rgba(255,255,255,.07);border:1px solid rgba(200,150,50,.3);
-        color:var(--parch);padding:4px 8px;border-radius:2px;font-size:11px;
-        outline:none;width:120px;font-family:inherit"/>
-      <button id="gh-save-token"
-        style="background:transparent;border:none;color:var(--gold);font-size:11px;
-        cursor:pointer;padding:0;font-family:inherit">저장</button>
+      <input type="password" id="gh-token" placeholder="GitHub 토큰"/>
+      <button id="gh-save-token">저장</button>
     </div>
   </div>
 </nav>
 <main>
   <div class="page on" id="page-map">
-    <div class="sec-title">채집 지역 안내</div>
-    <div class="ornament">── ✦ ──</div>
+    <div class="sec-title">✦ 채집 지역 안내</div>
     <div class="map-layout">
       <div class="region-nav" id="region-nav"></div>
-      <div class="map-detail" id="map-detail">
-        <div style="color:rgba(245,234,214,.35);text-align:center;padding:40px;15px">좌측 지역을 선택하세요</div>
-      </div>
+      <div class="map-detail" id="map-detail"><div style="color:rgba(245,234,214,.35);text-align:center;padding:40px">좌측 지역을 선택하세요</div></div>
     </div>
   </div>
   <div class="page" id="page-materials">
-    <div class="sec-title">마법재료 도감</div>
-    <div class="ornament">── ✦ ──</div>
+    <div class="sec-title">✦ 마법재료 도감</div>
     <div class="data-bar">
-      <button class="data-btn import" id="btn-import">📂 데이터 불러오기</button>
-      <button class="data-btn" id="btn-export">💾 데이터 내보내기</button>
+      <button class="data-btn" id="btn-import">📂 불러오기</button>
+      <button class="data-btn" id="btn-export">💾 내보내기</button>
     </div>
     <input type="file" id="import-file" accept=".json" style="display:none"/>
     <div class="filter-bar">
       <input type="text" id="mat-search" placeholder="재료명 검색…"/>
-      <div class="select-wrap">
-        <select class="sel" id="mat-effect-sel">
-          <option value="">효과 전체</option>
-          <option value="물리안정">물리안정</option>
-          <option value="정신안정">정신안정</option>
-          <option value="변이혼돈">변이혼돈</option>
-          <option value="강화조장">강화조장</option>
-          <option value="중화안정">중화안정</option>
-          <option value="환각">환각</option>
-          <option value="미확인">미확인</option>
-        </select>
-      </div>
-      <div class="select-wrap">
-        <select class="sel" id="mat-sort-sel">
-          <option value="alpha">가나다순</option>
-          <option value="idx">번호순</option>
-        </select>
-      </div>
+      <select class="sel" id="mat-effect-sel">
+        <option value="">효과 전체</option><option value="물리안정">물리안정</option><option value="정신안정">정신안정</option><option value="변이혼돈">변이혼돈</option><option value="강화조장">강화조장</option><option value="중화안정">중화안정</option><option value="환각">환각</option><option value="미확인">미확인</option>
+      </select>
+      <select class="sel" id="mat-sort-sel">
+        <option value="alpha">가나다순</option><option value="idx">번호순</option>
+      </select>
     </div>
     <div class="card-grid" id="mat-grid"></div>
   </div>
   <div class="page" id="page-spells">
-    <div class="sec-title">마법 레시피</div>
-    <div class="ornament">── ✦ ──</div>
+    <div class="sec-title">✦ 마법 레시피</div>
     <div class="filter-bar">
-      <input type="text" id="spell-search" placeholder="마법명 또는 재료명 검색…"/>
-      <button class="filter-btn on" data-cat="">전체</button>
-      <button class="filter-btn" data-cat="공격">공격</button>
-      <button class="filter-btn" data-cat="탐색">탐색</button>
-      <button class="filter-btn" data-cat="짐승">짐승</button>
-      <button class="filter-btn" data-cat="대화">대화</button>
-      <button class="filter-btn" data-cat="자연변화">자연변화</button>
-      <button class="filter-btn" data-cat="창조">창조</button>
-      <button class="filter-btn" data-cat="주술">주술</button>
-      <button class="filter-btn" data-cat="변이">변이</button>
+      <input type="text" id="spell-search" placeholder="마법명/재료명 검색…"/>
+      <select class="sel" id="spell-cat-sel">
+        <option value="">전체</option><option value="공격">공격</option><option value="탐색">탐색</option><option value="짐승">짐승</option><option value="대화">대화</option><option value="자연변화">자연변화</option><option value="창조">창조</option><option value="주술">주술</option><option value="변이">변이</option>
+      </select>
     </div>
     <div class="spell-grid" id="spell-grid"></div>
   </div>
 </main>
-<div class="modal-overlay" id="modal">
-  <div class="modal-box"><button class="modal-close" id="modal-close">×</button><div id="modal-content"></div></div>
-</div>
+<div class="modal-overlay" id="modal"><div class="modal-box"><button class="modal-close" id="modal-close">×</button><div id="modal-content"></div></div></div>
+<div class="modal-overlay" id="edit-modal"><div class="modal-box" style="max-width:440px"><button class="modal-close" id="edit-close">×</button>
+  <h3 id="edit-title" style="font-size:15px;font-weight:700;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--parch3)">재료 수정</h3>
+  <input type="hidden" id="edit-id"/>
+  <div class="edit-field"><label>재료명</label><input type="text" id="edit-name"/></div>
+  <div class="edit-field"><label>종류</label><select id="edit-type"><option value="">선택</option><option value="광물">광물</option><option value="꽃">꽃</option><option value="나무 열매">나무 열매</option><option value="동물">동물</option><option value="버섯">버섯</option><option value="약초">약초</option><option value="미분류">미분류</option></select></div>
+  <div class="edit-field"><label>효과</label><select id="edit-effect"><option value="물리안정">물리안정</option><option value="정신안정">정신안정</option><option value="변이혼돈">변이혼돈</option><option value="강화조장">강화조장</option><option value="중화안정">중화안정</option><option value="환각">환각</option><option value="미확인">미확인</option></select></div>
+  <div class="edit-field"><label>채집 장소 (번호/이름 검색, 여러 곳 선택 가능)</label><div style="position:relative"><input type="text" id="edit-location" placeholder="예: 9, 꽃과 버섯" autocomplete="off"/><div id="loc-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:10;background:var(--parch);border:1px solid var(--gold);max-height:180px;overflow-y:auto"></div></div><div id="loc-tags" style="margin-top:6px"></div></div>
+  <div class="edit-field"><label>계절</label><input type="text" id="edit-season"/></div>
+  <div class="edit-field"><label>채집 힌트</label><input type="text" id="edit-hint"/></div>
+  <div class="edit-field"><label>설명</label><textarea id="edit-desc"></textarea></div>
+  <div class="edit-btns"><button class="edit-cancel" id="edit-cancel">취소</button><button class="edit-save" id="edit-save">저장</button></div>
+</div></div>
+<div class="modal-overlay" id="conn-modal"><div class="modal-box" style="max-width:400px"><button class="modal-close" id="conn-close">×</button>
+  <h3 id="conn-modal-title" style="font-size:14px;font-weight:700;margin-bottom:14px">연결 맵 설정</h3>
+  <input type="text" id="conn-search" placeholder="번호/이름 검색…" style="width:100%;background:var(--parch2);border:1px solid var(--parch3);color:var(--ink);padding:8px 10px;border-radius:2px;font-size:13px;outline:none;margin-bottom:8px;font-family:inherit"/>
+  <div id="conn-results" style="max-height:200px;overflow-y:auto;border:1px solid var(--parch3);border-radius:2px"></div>
+</div></div>
+<div class="toast" id="toast"></div>
 <script type="application/json" id="d-mat">[{"id": "트라니피시레스", "type": "버섯", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "나무 열매와 비슷한 자색 버섯. 나무 근처 습한 땅에서 발견.", "hint": ""}, {"id": "네레케아미스", "type": "버섯", "effect": "정신안정", "location": "", "season": "연중", "desc": "어둡고 습한 부엽토 위에 나는 버섯. 그물 모양의 오렌지색 특징.", "hint": ""}, {"id": "그로베파니시스", "type": "버섯", "effect": "정신안정", "location": "", "season": "연중", "desc": "노란 구형이 빛나는 버섯. 주위 이끼에 기생하며 독소 포함.", "hint": ""}, {"id": "브로레아레니스", "type": "버섯", "effect": "강화조장", "location": "", "season": "연중", "desc": "청색 갓에 빨간 돌기. 추위에 강해 눈 속에서도 자람. 매우 희귀.", "hint": ""}, {"id": "오리오네스터르", "type": "광물", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "투명한 광석 속 금색 가루. 황금처럼 빛남. 가루로 부셔 사용.", "hint": ""}, {"id": "그리에몰터르", "type": "광물", "effect": "강화조장", "location": "", "season": "연중", "desc": "바위 도마뱀 알의 화석. 얼음 속에 수백년간 보존된 것.", "hint": ""}, {"id": "그로인터르", "type": "광물", "effect": "강화조장", "location": "", "season": "연중", "desc": "굳은 이끼 덩어리. 나뭇진 속 빨간 알맹이가 마법재료 부분.", "hint": ""}, {"id": "큰시도터르", "type": "광물", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "파란 과석질 광물. 표면을 깎아서 사용.", "hint": ""}, {"id": "스펜딜터르", "type": "광물", "effect": "강화조장", "location": "", "season": "연중", "desc": "녹색 불투명 광물. 쉽게 부서지므로 채취 주의.", "hint": ""}, {"id": "도르니슨터르", "type": "광물", "effect": "정신안정", "location": "", "season": "연중", "desc": "분홍빛 가시 모양 광물. 맹독 이끼와 혼동 주의.", "hint": ""}, {"id": "렌니스도터르", "type": "광물", "effect": "중화안정", "location": "", "season": "연중", "desc": "남쪽 바다 근처에서 채집.", "hint": ""}, {"id": "밋스딘터르", "type": "광물", "effect": "환각", "location": "", "season": "연중", "desc": "'행운의 눈'이라 불리는 희귀 보석. 반투명 황색 속 녹색 광석.", "hint": ""}, {"id": "톤그르터르", "type": "광물", "effect": "환각", "location": "", "season": "연중", "desc": "탁한 짙은 녹색 광물. 갈아서 가루 상태로 사용.", "hint": ""}, {"id": "라이갈=앗슈", "type": "광물", "effect": "환각", "location": "", "season": "연중", "desc": "라이갈(대형 호랑이)의 손톱. 마을에서 고가 거래.", "hint": ""}, {"id": "펠피오스터르", "type": "광물", "effect": "중화안정", "location": "", "season": "연중", "desc": "오렌지색 결정화 점액. 다른 재료 효력을 중화하는 성질.", "hint": ""}, {"id": "폰넬터르", "type": "광물", "effect": "강화조장", "location": "", "season": "연중", "desc": "희미한 금색 금속. 표면을 깎으면 내부 마법재료 부분 등장.", "hint": ""}, {"id": "도롯펜터르", "type": "광물", "effect": "정신안정", "location": "", "season": "연중", "desc": "바위 틈에서 성장하는 광석. 20년에 새끼손가락 크기로 자람.", "hint": ""}, {"id": "레오헤암", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "나무에 매달린 빨갛고 긴 열매. 약으로도 사용 가능. 채집 쉬움.", "hint": ""}, {"id": "미스트레임", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "파란 열매 속 빨간 씨. 보석처럼 예쁜 약초.", "hint": ""}, {"id": "가로세라리움", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "황색 꽃을 피우는 약초. 마법재료 및 약재로 중요. 비교적 쉽게 발견.", "hint": ""}, {"id": "워레나리름", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "독성 있는 줄기가 마법재료. 남쪽 초원에 흔함.", "hint": ""}, {"id": "그로리스맘", "type": "약초", "effect": "정신안정", "location": "", "season": "연중", "desc": "특징 없는 상록수 잎. 마법재료로 바로 사용 가능해 편리.", "hint": ""}, {"id": "크로이세아람", "type": "약초", "effect": "중화안정", "location": "", "season": "연중", "desc": "자색 꽃. 바위 틈 위험한 위치에 자람. 상쾌한 향기로 위치 파악 가능.", "hint": ""}, {"id": "닐키미시템", "type": "약초", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "자색 꽃. 뿌리 부분이 재료. 독성으로 도구 사용 채집 필요.", "hint": ""}, {"id": "카리베스맘", "type": "약초", "effect": "정신안정", "location": "", "season": "연중", "desc": "비교적 쉽게 발견하는 일반적 촉매.", "hint": ""}, {"id": "세시아레이아맘", "type": "약초", "effect": "정신안정", "location": "", "season": "연중", "desc": "새 날개 모양 녹색 잎 수초. 느린 강가에서 발견.", "hint": ""}, {"id": "오노그바맘", "type": "열매", "effect": "중화안정", "location": "", "season": "연중", "desc": "오렌지색 작은 열매. 많은 양 채집 필요.", "hint": ""}, {"id": "르네스테리오맘", "type": "꽃", "effect": "정신안정", "location": "", "season": "연중", "desc": "흑색 꽃잎의 아름다운 꽃. 그늘진 곳에서만 성장. 희귀.", "hint": ""}, {"id": "비인브로맘", "type": "열매", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "파란 나무 열매. 강한 독성. 12개 묶인 것이 효과 높음.", "hint": ""}, {"id": "프렌제롬", "type": "꽃", "effect": "중화안정", "location": "", "season": "연중", "desc": "가시 투성이 오렌지색 꽃. 뿌리에 독. 자극성 강함.", "hint": ""}, {"id": "크이레스메름", "type": "약초", "effect": "정신안정", "location": "", "season": "연중", "desc": "마음을 진정시키는 성분의 푸른 잎. 나무 꼭대기에 있어 채집 어려움.", "hint": ""}, {"id": "르쿼레맘", "type": "약초", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "풀숲에 섞여 자람. 땅속 뿌리 부분이 재료.", "hint": ""}, {"id": "바카스맘", "type": "열매", "effect": "중화안정", "location": "", "season": "연중", "desc": "오렌지색 가시 달린 빨간 열매. 발견 쉬우나 가시 독 주의.", "hint": ""}, {"id": "갈니오렘", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "흙속에서 자라는 약초. 둥근 뿌리가 마법재료.", "hint": ""}, {"id": "리라포름", "type": "약초", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "키다란 잎. 굵은 가시 부분이 재료. 나무 위에 매달림.", "hint": ""}, {"id": "디바리오맘", "type": "꽃", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "빨간 꽃. 뿌리 줄기에 독 있으나 마법재료.", "hint": ""}, {"id": "모스트아로맘", "type": "꽃", "effect": "중화안정", "location": "", "season": "연중", "desc": "고지 희귀 꽃. 꽃가루가 재료. 독 주의.", "hint": ""}, {"id": "볼멘트맘", "type": "꽃", "effect": "정신안정", "location": "", "season": "연중", "desc": "핑크색 꽃. 비교적 쉽게 발견.", "hint": ""}, {"id": "비스멘테맘", "type": "열매", "effect": "정신안정", "location": "", "season": "연중", "desc": "자색·오렌지색 혼합 열매. 오렌지색(미성숙) 껍질이 재료.", "hint": ""}, {"id": "아레르놈", "type": "열매", "effect": "중화안정", "location": "", "season": "연중", "desc": "담쟁이 덩굴 식물. 그늘진 곳에서만 성장. 꽃 후 씨가 재료.", "hint": ""}, {"id": "포스테로맘", "type": "열매", "effect": "정신안정", "location": "", "season": "연중", "desc": "빨간 열매. 한냉지 희귀 식물. 발견 즉시 채집 권장.", "hint": ""}, {"id": "이스테파름", "type": "꽃", "effect": "강화조장", "location": "", "season": "연중", "desc": "다색 아름다운 꽃. 뿌리 줄기의 작은 파란 열매가 재료.", "hint": ""}, {"id": "키노크로니캄", "type": "열매", "effect": "중화안정", "location": "", "season": "연중", "desc": "노란색 꽃 피는 나무 열매.", "hint": ""}, {"id": "이무르테시름", "type": "약초", "effect": "정신안정", "location": "", "season": "연중", "desc": "자색 뿌리 식물. 줄기 약하므로 잡아당기기 금지.", "hint": ""}, {"id": "제레티아무르", "type": "꽃", "effect": "정신안정", "location": "", "season": "연중", "desc": "오렌지색 특이한 꽃. 가시 많음.", "hint": ""}, {"id": "제른니톨그음", "type": "꽃", "effect": "정신안정", "location": "", "season": "연중", "desc": "소용돌이 모양 잎. 축축한 땅에 자람.", "hint": ""}, {"id": "보토네오람", "type": "꽃", "effect": "중화안정", "location": "", "season": "연중", "desc": "기생 식물. 근처에 나비밭 발생. 래비가 알려줌.", "hint": ""}, {"id": "팔팔모니암", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "남쪽 초원에 흔함.", "hint": ""}, {"id": "카코보랄심", "type": "열매", "effect": "중화안정", "location": "", "season": "연중", "desc": "담쟁이덩굴에 감싸인 열매. 서쪽 유사종은 마법재료 부적합.", "hint": ""}, {"id": "올지니시스케암", "type": "꽃", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "핑크·오렌지 이중 스커트 꽃. 꿀 냄새로 위치 파악 가능.", "hint": ""}, {"id": "볼트로니옴", "type": "꽃", "effect": "강화조장", "location": "", "season": "연중", "desc": "물 위에 떠있는 오렌지 열매. 빨간 꽃에 둘러싸임.", "hint": ""}, {"id": "유아시레니암", "type": "꽃", "effect": "물리안정", "location": "", "season": "연중", "desc": "연한 청색 3장 꽃잎. 상쾌한 냄새로 위치 파악 가능.", "hint": ""}, {"id": "펠피마움", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "담쟁이덩굴 속 자색 굵은 뿌리가 재료.", "hint": ""}, {"id": "코코시미리암", "type": "풀", "effect": "정신안정", "location": "", "season": "연중", "desc": "잡초처럼 보이는 풀. 뚜렷한 특징 없어 찾기 어려움.", "hint": ""}, {"id": "크로크리아로움", "type": "열매", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "작고 둥근 나무 열매. 동물 먹이도 됨. 채집 경쟁 있음.", "hint": ""}, {"id": "펫펠아니멤", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "기묘한 모양. 안이 텅 빈 것에 마법재료 포함.", "hint": ""}, {"id": "올로미레움", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "핑크 꽃에 에워싸인 빨간 열매가 재료. 모래쥐의 먹이.", "hint": ""}, {"id": "메스톰스토메림", "type": "열매", "effect": "물리안정", "location": "", "season": "겨울", "desc": "두꺼운 녹색 잎 속 노란 열매. 겨울에만 채집 가능.", "hint": ""}, {"id": "바브로니아맘", "type": "꽃", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "갈색 이삭에 독소 집중. 이삭 부분만 채집.", "hint": ""}, {"id": "펠로미네스=리도", "type": "동물", "effect": "물리안정", "location": "", "season": "연중", "desc": "도마뱀 꼬리. 재생하므로 여러 마리 채집 가능.", "hint": ""}, {"id": "파오페아레스", "type": "꽃", "effect": "중화안정", "location": "", "season": "연중", "desc": "분홍 꽃의 담쟁이. 꽃이 지면 빨간 씨가 재료.", "hint": ""}, {"id": "헤텔가로아=젤", "type": "동물", "effect": "정신안정", "location": "", "season": "연중", "desc": "핑크색 산호. 마음 안정 성분. 향으로도 이용.", "hint": ""}, {"id": "켓카=에이리스", "type": "동물", "effect": "환각", "location": "", "season": "연중", "desc": "파란 눈의 개구리 눈알. 얼어붙은 채로 발견.", "hint": ""}, {"id": "쿠르가라=아르키", "type": "동물", "effect": "물리안정", "location": "", "season": "연중", "desc": "거북이 등딱지. 약재료 겸용 가능하나 이상한 냄새.", "hint": ""}, {"id": "세렛타=티세", "type": "동물", "effect": "물리안정", "location": "", "season": "연중", "desc": "고동 조개. 녹색 자가 부분이 재료. 채집 후 재생.", "hint": ""}, {"id": "네레스레이=티세", "type": "동물", "effect": "강화조장", "location": "", "season": "연중", "desc": "붉은색 보석 같은 희귀 조개.", "hint": ""}, {"id": "제라=팔그", "type": "동물", "effect": "강화조장", "location": "", "season": "연중", "desc": "겁 많은 작은 새의 부리. 나무 흔들면 땅에 떨어짐.", "hint": ""}, {"id": "베라이라=리도", "type": "동물", "effect": "강화조장", "location": "", "season": "연중", "desc": "핑크색 귀 꼬리. 땅 속 모이므로 머리만 지상에 보임.", "hint": ""}, {"id": "데릭=아데아", "type": "동물", "effect": "강화조장", "location": "", "season": "연중", "desc": "박쥐의 이빨.", "hint": ""}, {"id": "알쿠터=에리에", "type": "동물", "effect": "강화조장", "location": "", "season": "연중", "desc": "벌레 발. 소량 독 있으므로 채집 주의.", "hint": ""}, {"id": "에이세가=리도", "type": "동물", "effect": "환각", "location": "", "season": "연중", "desc": "환상의 원숭이 꼬리. 빛나는 희귀한 꼬리. 매우 희귀.", "hint": ""}, {"id": "프스크로=라체", "type": "동물", "effect": "강화조장", "location": "", "season": "연중", "desc": "새벽폭 날개. 독 있으므로 풀뭉치로 채집.", "hint": ""}, {"id": "팔에미=제란", "type": "동물", "effect": "정신안정", "location": "", "season": "연중", "desc": "빨간 게의 집게발. 조심하면 안전 채집 가능.", "hint": ""}, {"id": "쿠스돌=에리에", "type": "동물", "effect": "강화조장", "location": "", "season": "연중", "desc": "작은 동물 뿔. 태어나 딱 한 번 남. 찾기 어려움.", "hint": ""}, {"id": "밈타포름", "type": "열매", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "갈색 딱딱한 나무 열매. 특별한 특징 없음.", "hint": ""}, {"id": "돈돌가오람", "type": "열매", "effect": "중화안정", "location": "", "season": "연중", "desc": "잔털 덮인 갈색 열매. 흉폭한 동물과 만날 수 있어 주의.", "hint": ""}, {"id": "알아시테림", "type": "꽃", "effect": "강화조장", "location": "", "season": "연중", "desc": "핑크색 고산식물. 서쪽에서 자주 발견.", "hint": ""}, {"id": "발코스테마", "type": "꽃", "effect": "강화조장", "location": "", "season": "연중", "desc": "나팔 모양 노란 꽃. 꽃가루가 재료.", "hint": ""}, {"id": "카스파엣심", "type": "꽃", "effect": "강화조장", "location": "", "season": "연중", "desc": "수면 위 빨간 꽃. 꽃잎이 재료.", "hint": ""}, {"id": "울크로넴", "type": "꽃", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "오렌지 열매를 둘러싼 빨간 꽃.", "hint": ""}, {"id": "롯티르스터르", "type": "약초", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "서쪽 숲속에서 비교적 자주 발견.", "hint": ""}, {"id": "필크리스터르", "type": "광물", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "액상 성분이 얼음으로 덮힌 수수께끼 재료.", "hint": ""}, {"id": "그로케아인터르", "type": "광물", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "아름다운 녹색 결정. 치명적 독소 포함. 취급 주의.", "hint": ""}, {"id": "라시카레이스", "type": "광물", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "북쪽 동굴 광석.", "hint": ""}, {"id": "호시레아니스", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "북쪽 바위밭 채집 식물.", "hint": ""}, {"id": "빌아레스", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "서쪽 숲속 식물.", "hint": ""}, {"id": "케아도레이스", "type": "약초", "effect": "물리안정", "location": "", "season": "연중", "desc": "동쪽 숲속 채집 식물.", "hint": ""}, {"id": "모스카에레스", "type": "약초", "effect": "정신안정", "location": "", "season": "연중", "desc": "남쪽 바위밭 채집 식물.", "hint": ""}, {"id": "가르타=티세", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "갱란=에이사", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "그레키시오터르", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "디칸=파리오", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "류세겔오맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "메릴스터르", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "모세시시람", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "모차", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "몰브메임", "type": "꽃", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "핑크색 꽃봉우리. 비교적 쉽게 발견. 벌레 주의.", "hint": ""}, {"id": "발베트리암", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "볼보로시맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "브로네켄스터르", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "브로레카니스", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "브로바네오맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "브로세네아맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "빌키가토롬", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "아메미호로심", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "에르니카심", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "오레케아레스", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "오스트맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "온아그르맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "올그레이스터르", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "옴카놀드젬", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "이리오스맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "일베스토터르", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "일스메토람", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "쟈메논맘", "type": "광물", "effect": "물리안정", "location": "", "season": "연중", "desc": "흑색 둥근 모양. 땅 속에서 자라 지상으로 나옴.", "hint": ""}, {"id": "제노모이맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "제라=아메레", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "제오카로니시스", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "지아지스레메림", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "카나카라=페피", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "카르포레이즈", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "카카가라이=리도", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "카카레로니시스", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "카카아스롬", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "카쿠라코름", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "카페라이즈", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "캉가스=에리에", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "케아페레스", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "케오카오메리심", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "퀄포암", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "크록스=리도", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "톨도아=리도", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "파르위님", "type": "열매", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "자색 열매. 한냉지 산물. 바깥은 얼어도 내부는 온전.", "hint": ""}, {"id": "포노그레아맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "포닌텔터르", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "프타로아니스", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "하카라시미리맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "히크로맘", "type": "약초", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "빨간 덩굴 뿌리 식물. 다른 나무 뿌리에 달라붙어 성장. 발견 어려움.", "hint": ""}, {"id": "케리칼=에이리스", "type": "동물", "effect": "변이혼돈", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "라이즈크레스", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "크레이도=테키라", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "틸테=라체", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "잣체=라체", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "바길=아테아", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "파지아시아람", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "파즈스시아림", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "스와니칼몸", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "브미제로맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "브로세네아맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "보로네워맘", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}, {"id": "톨브란맘", "type": "약초", "effect": "정신안정", "location": "27", "season": "땅, 풍", "desc": "—", "hint": ""}, {"id": "올위크레스", "type": "미분류", "effect": "미확인", "location": "", "season": "연중", "desc": "—", "hint": ""}]</script>
 <script type="application/json" id="d-spells">[{"name": "빨간 불꽃의 마법", "category": "공격", "effect": "한번에 적을 다 태워버림", "recipe": [["호시레아니스", "태운다"], ["데릭=아데아", "건조시킨다"], ["트라니피시레스", "으깬다"], ["라이즈크레스", "으깬다"]]}, {"name": "파란 번개의 마법", "category": "공격", "effect": "파란 번개로 적을 태움", "recipe": [["몰브메임", "건조시킨다"], ["히크로맘", "태운다"], ["라시카레이스", "으깬다"], ["비스멘테맘", "끓인다"]]}, {"name": "얼음의 마법", "category": "공격", "effect": "적을 얼려 분해", "recipe": [["유아시레니암", "태운다"], ["하카라시미리맘", "으깬다"], ["메스톰스토메림", "건조시킨다"], ["톤그르터르", "끓인다"]]}, {"name": "바람의 검 마법", "category": "공격", "effect": "한번에 적을 싹둑 자름", "recipe": [["르네스테리오맘", "으깬다"], ["오리오네스터르", "건조시킨다"], ["그로케아인터르", "태운다"], ["르쿼레맘", "끓인다"]]}, {"name": "압축의 마법", "category": "공격", "effect": "한번에 적을 무너뜨림", "recipe": [["그리에몰터르", "으깬다"], ["빌키가토롬", "끓인다"], ["잣체=라체", "태운다"], ["빌아레스", "건조시킨다"]]}, {"name": "독무의 마법", "category": "공격", "effect": "한번에 적을 즉사", "recipe": [["케아도레이스", "건조시킨다"], ["그로베파니시스", "끓인다"], ["에르니카심", "으깬다"], ["볼트로니옴", "태운다"]]}, {"name": "함몰의 마법", "category": "공격", "effect": "적을 낙해 충돌", "recipe": [["그레키시오터르", "으깬다"], ["그로인터르", "끓인다"], ["포노그레아맘", "태운다"], ["모차", "태운다"]]}, {"name": "섬광의 마법", "category": "공격", "effect": "한번에 적을 관통", "recipe": [["가르타=티세", "태운다"], ["렌니스도터르", "으깬다"], ["펠피오스터르", "으깬다"], ["네레케아미스", "으깬다"]]}, {"name": "물리재료의 탐색", "category": "탐색", "effect": "물리안정효과 재료 위치 탐색", "recipe": [["올로미레움", "태운다"], ["그로리스맘", "으깬다"], ["류세겔오맘", "건조시킨다"]]}, {"name": "정신재료의 탐색", "category": "탐색", "effect": "정신안정효과 재료 위치 탐색", "recipe": [["옴카놀드젬", "끓인다"], ["잣체=라체", "태운다"], ["파지아시아람", "으깬다"]]}, {"name": "변이재료의 탐색", "category": "탐색", "effect": "변이혼돈효과 재료 위치 탐색", "recipe": [["파르위님", "태운다"], ["아레르놈", "으깬다"], ["카스파엣심", "끓인다"]]}, {"name": "강화재료의 탐색", "category": "탐색", "effect": "강화조장효과 재료 위치 탐색", "recipe": [["미스트레임", "으깬다"], ["스펜딜터르", "끓인다"], ["제오카로니시스", "건조시킨다"]]}, {"name": "중화재료의 탐색", "category": "탐색", "effect": "중화안정효과 재료 위치 탐색", "recipe": [["이리오스맘", "끓인다"], ["크로이세아람", "으깬다"], ["펠피마움", "태운다"]]}, {"name": "환각재료의 탐색", "category": "탐색", "effect": "환각효과 재료 위치 탐색", "recipe": [["케아페레스", "태운다"], ["바카스맘", "으깬다"], ["크이레스메름", "건조시킨다"]]}, {"name": "마비의 마법", "category": "짐승", "effect": "생물 마비, 움직임 불가", "recipe": [["올지니시스케암", "끓인다"], ["울크로넴", "태운다"], ["키노크로니캄", "으깬다"]]}, {"name": "따라하기의 마법", "category": "짐승", "effect": "걸린 생물이 따라다님", "recipe": [["스와니칼몸", "태운다"], ["밈타포름", "으깬다"]]}, {"name": "역이동의 마법", "category": "짐승", "effect": "반대 방향으로 이동", "recipe": [["제른니톨그음", "으깬다"]]}, {"name": "혼란의 마법", "category": "짐승", "effect": "어정어정 걷게 됨", "recipe": [["지아지스레메림", "태운다"], ["톨도아=리도", "끓인다"]]}, {"name": "공포의 마법", "category": "짐승", "effect": "생물이 도망침", "recipe": [["볼보로시맘", "으깬다"], ["발베트리암", "태운다"]]}, {"name": "친구의 마법", "category": "짐승", "effect": "생물이 다정하게 다가옴", "recipe": [["이무르테시름", "으깬다"], ["카카아스롬", "으깬다"]]}, {"name": "생물과의 대화", "category": "대화", "effect": "생물과 대화 가능", "recipe": [["알쿠터=에리에", "끓인다"], ["크레이도=테키라", "태운다"], ["쿠스돌=에리에", "건조시킨다"]]}, {"name": "무생물과의 대화", "category": "대화", "effect": "나무·바위 등과 대화 가능", "recipe": [["레오헤암", "건조시킨다"], ["볼멘트맘", "으깬다"], ["코코시미리암", "끓인다"]]}, {"name": "나무가 되는 마법", "category": "자연변화", "effect": "지형을 나무로 변화", "recipe": [["모스카에레스", "끓인다"], ["갈니오렘", "태운다"], ["디바리오맘", "건조시킨다"]]}, {"name": "바위가 되는 마법", "category": "자연변화", "effect": "생물을 바위로 변화", "recipe": [["폰넬터르", "으깬다"], ["크이레스메름", "태운다"], ["카코보랄심", "끓인다"], ["바카스맘", "태운다"]]}, {"name": "꽃밭이 되는 마법", "category": "자연변화", "effect": "지형을 꽃밭으로 변화", "recipe": [["에이세가=리도", "끓인다"], ["레오헤암", "태운다"], ["스펜딜터르", "으깬다"], ["케아도레이스", "끓인다"]]}, {"name": "곰이 되는 마법", "category": "자연변화", "effect": "지형을 곰인형으로 변화", "recipe": [["헤텔가로아=젤", "태운다"], ["세렛타=티세", "으깬다"], ["팔팔모니암", "건조시킨다"]]}, {"name": "건포도의 창조", "category": "창조", "effect": "건포도 생성", "recipe": [["보토네오람", "으깬다"], ["도르니슨터르", "건조시킨다"]]}, {"name": "빵의 창조", "category": "창조", "effect": "빵 생성", "recipe": [["브로바네오맘", "태운다"], ["돈돌가오람", "끓인다"]]}, {"name": "깜짝 상자", "category": "창조", "effect": "무엇이 나올지 모르는 상자", "recipe": [["트라니피시레스", "건조시킨다"], ["제노모이맘", "끓인다"], ["오스트맘", "태운다"]]}, {"name": "도시락의 창조", "category": "창조", "effect": "도시락 생성", "recipe": [["밈타포름", "태운다"], ["브로네켄스터르", "으깬다"], ["팔팔모니암", "끓인다"]]}, {"name": "물고기의 창조", "category": "창조", "effect": "물고기 생성", "recipe": [["옴카놀드젬", "으깬다"], ["에르니카심", "태운다"], ["올로미레움", "끓인다"]]}, {"name": "술의 창조", "category": "창조", "effect": "술 생성", "recipe": [["브로레아레니스", "태운다"], ["퀄포암", "으깬다"], ["카나카라=페피", "건조시킨다"]]}, {"name": "마법재료의 창조", "category": "창조", "effect": "마법재료 생성", "recipe": [["브로레카니스", "태운다"], ["톨브란맘", "끓인다"], ["포스테로맘", "으깬다"], ["파지아시아람", "건조시킨다"], ["히크로맘", "끓인다"]]}, {"name": "약화의 마법", "category": "주술", "effect": "닿기만 해도 부서져 없어짐", "recipe": [["파오페아레스", "태운다"], ["파지아시아람", "건조시킨다"], ["펫펠아니멤", "으깬다"], ["잣체=라체", "태운다"]]}, {"name": "무력화의 마법", "category": "주술", "effect": "사물 무력화", "recipe": [["닐키미시템", "건조시킨다"], ["모스트아로맘", "태운다"], ["지아지스레메림", "끓인다"], ["톨도아=리도", "으깬다"]]}, {"name": "위험화의 마법", "category": "주술", "effect": "닿으면 해를 입음", "recipe": [["메릴스터르", "으깬다"], ["베라이라=리도", "끓인다"], ["모차", "건조시킨다"], ["미스트레임", "태운다"]]}, {"name": "치유력의 마법", "category": "주술", "effect": "닿으면 체력 회복", "recipe": [["카카레로니시스", "태운다"], ["제라=아메레", "으깬다"], ["알쿠터=에리에", "끓인다"], ["켓카=에이리스", "태운다"], ["가로세라리움", "끓인다"]]}, {"name": "바람의 음색 마법", "category": "주술", "effect": "닿을 때마다 다른 음색", "recipe": [["카리베스맘", "끓인다"], ["파오페아레스", "태운다"], ["크로크리아로움", "으깬다"], ["세시아레이아맘", "건조시킨다"]]}, {"name": "나무 변화의 마법", "category": "변이", "effect": "생물을 나무로 변화", "recipe": [["필크리스터르", "으깬다"], ["그로리스맘", "건조시킨다"], ["크로이세아람", "끓인다"], ["카카가라이=리도", "끓인다"]]}, {"name": "호박 변화의 마법", "category": "변이", "effect": "생물을 호박으로 변화", "recipe": [["아메미호로심", "건조시킨다"], ["쿠르가라=아르키", "태운다"], ["쟈메논맘", "태운다"], ["온아그르맘", "끓인다"]]}, {"name": "버섯 변화의 마법", "category": "변이", "effect": "생물을 버섯으로 변화", "recipe": [["르네스테리오맘", "태운다"], ["호시레아니스", "건조시킨다"], ["크로크리아로움", "으깬다"], ["카쿠라코름", "으깬다"]]}, {"name": "모래쥐 변화의 마법", "category": "변이", "effect": "물체를 모래쥐로 변화", "recipe": [["그로리스맘", "태운다"], ["바브로니아맘", "끓인다"], ["비인브로맘", "끓인다"], ["닐키미시템", "건조시킨다"]]}, {"name": "피피 변화의 마법", "category": "변이", "effect": "물체를 피피로 변화", "recipe": [["롯티르스터르", "으깬다"], ["발베트리암", "태운다"], ["제오카로니시스", "건조시킨다"], ["큰시도터르", "끓인다"], ["퀄포암", "태운다"]]}, {"name": "피노(팽귄) 변화의 마법", "category": "변이", "effect": "물체를 피노(팽귄)로 변화", "recipe": [["미스트레임", "으깬다"], ["갈니오렘", "끓인다"], ["파지아시아람", "건조시킨다"], ["일베스토터르", "으깬다"], ["제오카로니시스", "끓인다"]]}, {"name": "용조 변화의 마법", "category": "변이", "effect": "물체를 용조로 변화", "recipe": [["케리칼=에이리스", "으깬다"], ["파르위님", "끓인다"], ["볼트로니옴", "건조시킨다"], ["이리오스맘", "끓인다"], ["크로이세아람", "태운다"]]}, {"name": "뿔개구리 변화의 마법", "category": "변이", "effect": "물체를 뿔개구리로 변화", "recipe": [["라이갈=앗슈", "끓인다"], ["오노그바맘", "태운다"], ["크이레스메름", "건조시킨다"], ["알아시테림", "끓인다"]]}, {"name": "물 변화의 마법", "category": "변이", "effect": "물체를 물로 변화", "recipe": [["그로베파니시스", "건조시킨다"], ["프렌제롬", "으깬다"], ["펫펠아니멤", "끓인다"], ["가르타=티세", "으깬다"], ["그리에몰터르", "으깬다"]]}]</script>
 <script type="application/json" id="d-areas">{"1": {"name": "바다가 보이는 집", "region": "섬", "color": "#2a5a6a"}, "2": {"name": "갑에 이어지는 모래사장", "region": "섬", "color": "#8a7a4a"}, "3": {"name": "바람부는 해변의 초원", "region": "섬", "color": "#4a7a3a"}, "4": {"name": "서쪽의 산, 바람이 부는 대지", "region": "섬", "color": "#5a4a3a"}, "5": {"name": "서쪽의 계곡사이 휴식의 샘", "region": "섬", "color": "#3a6a5a"}, "6": {"name": "떠도는 꿈의 호수", "region": "섬", "color": "#3a4a7a"}, "7": {"name": "깊은 숲 북쪽의 동굴", "region": "섬", "color": "#3a3a2a"}, "8": {"name": "바다가 보이는 초원", "region": "섬", "color": "#4a7a5a"}, "9": {"name": "꽃과 버섯과 초록의 숲", "region": "섬", "color": "#2a6a2a"}, "10": {"name": "덴그리 산기슭", "region": "섬", "color": "#5a4a2a"}, "11": {"name": "덴그리 고개", "region": "섬", "color": "#6a5a3a"}, "12": {"name": "몰이 사는 동굴 앞", "region": "섬", "color": "#4a3a2a"}, "13": {"name": "강이 흐르는 넓은 숲", "region": "섬", "color": "#2a5a2a"}, "14": {"name": "마법사의 집", "region": "섬", "color": "#6a4a2a"}, "15": {"name": "동쪽의 초원지대", "region": "섬", "color": "#5a7a2a"}, "16": {"name": "잘려 무너진 낭떠러지", "region": "섬", "color": "#5a4a3a"}, "17": {"name": "서쪽, 최남서쪽의 모래사장", "region": "섬", "color": "#8a7a4a"}, "18": {"name": "고목나무와 가시나무숲", "region": "섬", "color": "#3a4a2a"}, "19": {"name": "서쪽의 바위밭", "region": "섬", "color": "#6a5a4a"}, "20": {"name": "탑의 입구", "region": "섬", "color": "#5a3a5a"}, "21": {"name": "서쪽의 강가 모래밭", "region": "섬", "color": "#6a7a4a"}, "22": {"name": "동쪽의 가시나무숲", "region": "섬", "color": "#3a5a2a"}, "23": {"name": "산림, 작은 집", "region": "섬", "color": "#4a5a3a"}, "24": {"name": "숲의 마을 입구", "region": "섬", "color": "#5a5a3a"}, "25": {"name": "숲의 마을", "region": "섬", "color": "#7a6a3a"}, "26": {"name": "서쪽끝의 해안", "region": "섬", "color": "#2a5a7a"}, "27": {"name": "서쪽, 가시나무 숲", "region": "섬", "color": "#3a5a2a"}, "28": {"name": "남쪽, 외딴섬으로 가는 모래사장", "region": "섬", "color": "#8a7a5a"}, "29": {"name": "서쪽 바위가 많은 모래사장", "region": "섬", "color": "#7a6a4a"}, "30": {"name": "남쪽, 잔잔히 흘러가는 강", "region": "섬", "color": "#3a5a6a"}, "31": {"name": "강이 흐르는 넓은 숲", "region": "섬", "color": "#2a5a2a"}, "32": {"name": "통나무 다리와 작은 오두막 집", "region": "섬", "color": "#6a5a3a"}, "33": {"name": "동쪽으로 흐르는 강", "region": "섬", "color": "#3a5a5a"}, "34": {"name": "서쪽, 조용한 바다의 모래사장", "region": "섬", "color": "#7a7a5a"}, "35": {"name": "원주민이 사는 촌락", "region": "섬", "color": "#7a5a3a"}, "36": {"name": "남쪽의 외딴섬", "region": "섬", "color": "#2a6a5a"}, "37": {"name": "남쪽, 넓어진 바다와 낭떠러지", "region": "섬", "color": "#3a4a6a"}, "38": {"name": "남쪽 숲, 흘러가는 강과 초원", "region": "섬", "color": "#3a6a3a"}, "39": {"name": "남쪽, 가시나무 숲", "region": "섬", "color": "#3a5a2a"}, "40": {"name": "보랏빛 숲", "region": "섬", "color": "#5a3a6a"}, "41": {"name": "동쪽의 끝, 조용한 모래밭과 초원", "region": "섬", "color": "#6a7a5a"}, "42": {"name": "남쪽, 작은 섬", "region": "섬", "color": "#2a6a6a"}, "43": {"name": "남쪽의 낭떠러지", "region": "섬", "color": "#5a4a3a"}, "44": {"name": "조용히 밀려오는 남쪽의 바다", "region": "섬", "color": "#2a4a6a"}, "45": {"name": "남쪽 방향의 긴 모래사장", "region": "섬", "color": "#8a7a4a"}, "46": {"name": "바다가 보이는 잔잔한 숲", "region": "섬", "color": "#3a6a4a"}, "47": {"name": "고도의 남쪽", "region": "섬", "color": "#5a5a4a"}, "48": {"name": "어떻게 이렇게 큰 거북이가?", "region": "섬", "color": "#4a6a4a"}, "49": {"name": "얼음에 뒤집힌 배", "region": "북쪽지방", "color": "#4a6a8a"}, "50": {"name": "유령선", "region": "북쪽지방", "color": "#3a3a5a"}, "51": {"name": "가장 북쪽의 골짜기", "region": "북쪽지방", "color": "#5a6a7a"}, "52": {"name": "눈과 빙원", "region": "북쪽지방", "color": "#7a8a9a"}, "53": {"name": "펭귄의 성", "region": "북쪽지방", "color": "#5a7a8a"}, "54": {"name": "흰 용이 사는 동굴", "region": "북쪽지방", "color": "#6a5a7a"}, "55": {"name": "얼음의 성 입구", "region": "북쪽지방", "color": "#6a7a8a"}, "56": {"name": "북쪽 내리는 설원", "region": "북쪽지방", "color": "#7a8a9a"}, "57": {"name": "눈이 줄기차게 내리는 황야", "region": "북쪽지방", "color": "#6a7a8a"}, "58": {"name": "살얼음 바다", "region": "북쪽지방", "color": "#4a6a8a"}, "59": {"name": "흐르는 얼음의 바다", "region": "북쪽지방", "color": "#4a5a7a"}, "60": {"name": "북해와 작은 숲", "region": "북쪽지방", "color": "#3a5a5a"}, "61": {"name": "북쪽의 숲", "region": "북쪽지방", "color": "#2a4a3a"}, "62": {"name": "북쪽의 바위밭", "region": "북쪽지방", "color": "#5a5a4a"}, "63": {"name": "북의 산맥", "region": "북쪽지방", "color": "#6a5a4a"}, "64": {"name": "몰의 동굴 (두더지가 사는 걸까?)", "region": "동굴", "color": "#3a2a1a", "connects": ["61"]}, "65": {"name": "동쪽, 북쪽으로 이어지는 동굴", "region": "동굴", "color": "#3a2a1a", "connects": ["63", "7"]}, "66": {"name": "몰의 동굴 (남쪽섬 지름길)", "region": "동굴", "color": "#3a2a1a", "connects": ["12", "28"]}}</script>
@@ -424,431 +206,224 @@ const MAT=JSON.parse(document.getElementById('d-mat').textContent);
 const SPELLS=JSON.parse(document.getElementById('d-spells').textContent);
 const AREAS=JSON.parse(document.getElementById('d-areas').textContent);
 const IMGS=JSON.parse(document.getElementById('d-imgs').textContent);
-
-const TYPE_EMOJI={'버섯':'🍄','광물':'💎','약초':'🌿','꽃':'🌸','열매':'🍒','수초':'🌊','식물':'🌱','잎':'🍃','풀':'🌾','동물':'🐾'};
-const EFFECT_BG={'물리안정':'#1a4a2a','정신안정':'#1a3a5a','변이혼돈':'#3a1a5a','강화조장':'#5a3a0a','중화안정':'#3a3a1a','환각':'#5a1a1a'};
+const TYPE_EMOJI={'버섯':'🍄','광물':'💎','약초':'🌿','꽃':'🌸','나무 열매':'🍒','열매':'🍒','동물':'🐾','미분류':'✨'};
+const STORAGE_KEY='maho_data_v2';
+const GH_USER='kadee322',GH_REPO='maho-dagam',GH_FILE='maho_재료데이터.json',GH_TOKEN_KEY='maho_gh_token';
+const GITHUB_JSON='https://kadee322.github.io/maho-dagam/maho_재료데이터.json';
+const DIRS=[{key:'north',label:'북'},{key:'east',label:'동'},{key:'south',label:'남'},{key:'west',label:'서'}];
 
 function getEmoji(m){return TYPE_EMOJI[m.type]||'✨';}
-function getImg(name){return IMGS[name]||null;}
-function imgEl(name,cls,style){
-  const src=getImg(name);
-  if(src) return `<img src="${src}" class="${cls}" style="${style||''}" loading="lazy"/>`;
-  const m=MAT.find(x=>x.id===name)||{type:''};
-  return `<div class="${cls}" style="${style||''}display:flex;align-items:center;justify-content:center;24px">${getEmoji(m)}</div>`;
+function getImg(n){return IMGS[n]||null;}
+function getToken(){return localStorage.getItem(GH_TOKEN_KEY)||'';}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function getConnects(no){
+  const c=AREAS[no]&&AREAS[no].connects;
+  const r={north:[],east:[],south:[],west:[]};
+  if(!c)return r;
+  DIRS.forEach(d=>{const v=c[d.key];if(Array.isArray(v))r[d.key]=v;else if(v)r[d.key]=[String(v)];});
+  return r;
+}
+function setConnects(no,c){if(AREAS[no]){AREAS[no].connects=c;saveData();}}
+
+function saveData(){
+  try{
+    const conn={};Object.entries(AREAS).forEach(([no,a])=>{if(a.connects)conn[no]=a.connects;});
+    localStorage.setItem(STORAGE_KEY,JSON.stringify({materials:MAT,connects:conn}));
+  }catch(e){}
+}
+function loadData(){
+  try{
+    const s=localStorage.getItem(STORAGE_KEY);if(!s)return false;
+    const p=JSON.parse(s);
+    applyData(p);
+    return true;
+  }catch(e){return false;}
+}
+function applyData(raw){
+  const list=Array.isArray(raw)?raw:(raw.materials||[]);
+  list.forEach(sm=>{const i=MAT.findIndex(m=>m.id===sm.id);if(i>=0)Object.assign(MAT[i],sm);else MAT.push(sm);});
+  if(raw.connects)Object.entries(raw.connects).forEach(([no,c])=>{
+    if(AREAS[no]&&c){const mig={};DIRS.forEach(d=>{const v=c[d.key];mig[d.key]=Array.isArray(v)?v:(v?[String(v)]:[]);});AREAS[no].connects=mig;}
+  });
+}
+function showToast(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+function exportJSON(){
+  const conn={};Object.entries(AREAS).forEach(([no,a])=>{if(a.connects)conn[no]=a.connects;});
+  const blob=new Blob([JSON.stringify({materials:MAT,connects:conn},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='maho_재료데이터.json';a.click();
+  showToast('💾 저장 완료!');
+}
+function importJSON(file){
+  const r=new FileReader();
+  r.onload=e=>{try{const raw=JSON.parse(e.target.result);applyData(raw);saveData();renderMats();renderMap();showToast('📂 불러오기 완료!');}catch(err){showToast('❌ 파일 오류');}};
+  r.readAsText(file);
+}
+async function saveToGitHub(){
+  const token=getToken();if(!token){return;}
+  const gs=document.getElementById('gh-status');if(gs)gs.textContent='☁️...';
+  try{
+    const gr=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,{headers:{'Authorization':'token '+token}});
+    const gj=await gr.json();const sha=gj.sha;
+    const conn={};Object.entries(AREAS).forEach(([no,a])=>{if(a.connects)conn[no]=a.connects;});
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify({materials:MAT,connects:conn},null,2))));
+    const pr=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,{method:'PUT',headers:{'Authorization':'token '+token,'Content-Type':'application/json'},body:JSON.stringify({message:'update',content,sha})});
+    if(pr.ok){if(gs)gs.textContent='☁️';showToast('☁️ GitHub 저장!');}else{throw new Error();}
+  }catch(e){if(gs)gs.textContent='❌';}
 }
 
 // 탭
-document.querySelectorAll('.nav-btn').forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-    btn.classList.add('on');
-    document.getElementById('page-'+btn.dataset.page).classList.add('on');
-  };
-});
+document.querySelectorAll('.nav-btn').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));t.classList.add('on');document.getElementById('page-'+t.dataset.page).classList.add('on');};});
 
 // 맵
-// 연결 편집 상태
-let editConnState = {no: null, dir: null};
-const DIRS = [{key:'north',label:'북'},{key:'east',label:'동'},{key:'south',label:'남'},{key:'west',label:'서'}];
-
-function getConnects(no) {
-  const c = AREAS[no]?.connects;
-  if(!c) return {north:[],east:[],south:[],west:[]};
-  // 구버전 호환 (string → array)
-  const result = {};
-  DIRS.forEach(d=>{
-    const v = c[d.key];
-    if(Array.isArray(v)) result[d.key] = v;
-    else if(v) result[d.key] = [v];
-    else result[d.key] = [];
-  });
-  return result;
-}
-function setConnects(no, connects) {
-  if(!AREAS[no]) return;
-  AREAS[no].connects = connects;
-  saveAreaConnects();
-}
-function saveAreaConnects() { saveToLocal(); }
-function loadAreaConnects() { /* loadFromLocal에서 처리 */ }
-
 function renderMap(){
   const nav=document.getElementById('region-nav');
-  const detail=document.getElementById('map-detail');
-
-  const areaMatMap={};
-  MAT.forEach(m=>{
-    if(!m.location)return;
-    m.location.split(',').map(s=>s.trim()).forEach(loc=>{
-      if(!areaMatMap[loc])areaMatMap[loc]=[];
-      if(!areaMatMap[loc].find(x=>x.id===m.id)) areaMatMap[loc].push(m);
-    });
-  });
-
-  const regionOrder=['섬','북쪽지방','동굴'];
-  const sorted=Object.entries(AREAS).sort((a,b)=>+a[0]-(+b[0]));
-
-  let navHtml='';
-  regionOrder.forEach(region=>{
-    const items=sorted.filter(([,a])=>a.region===region);
-    navHtml+=`<div class="region-group-title">${region}</div>`;
-    navHtml+=items.map(([no,area])=>{
-      const cnt=(areaMatMap[no]||[]).length;
-      return `<button class="region-btn" data-no="${no}">
-        <span class="region-dot" style="background:${area.color}"></span>
-        <span class="region-no">${no}.</span>${area.name}
-        ${cnt?`<span class="region-count">${cnt}종</span>`:''}
-      </button>`;
+  const amap={};
+  MAT.forEach(m=>{if(!m.location)return;m.location.split(',').map(s=>s.trim()).forEach(l=>{if(!amap[l])amap[l]=[];if(!amap[l].find(x=>x.id===m.id))amap[l].push(m);});});
+  const order=['섬','북쪽지방','동굴'];
+  const sorted=Object.entries(AREAS).sort((a,b)=>+a[0]-+b[0]);
+  let h='';
+  order.forEach(reg=>{
+    h+=`<div class="region-group-title">${reg}</div>`;
+    h+=sorted.filter(([,a])=>a.region===reg).map(([no,a])=>{
+      const cnt=(amap[no]||[]).length;
+      return `<button class="region-btn" data-no="${no}"><span class="region-dot" style="background:${a.color}"></span><span class="region-no">${no}.</span>${a.name}${cnt?`<span class="region-count">${cnt}종</span>`:''}</button>`;
     }).join('');
   });
-  nav.innerHTML=navHtml;
-
-  nav.querySelectorAll('.region-btn').forEach(btn=>{
-    btn.onclick=()=>{
-      nav.querySelectorAll('.region-btn').forEach(b=>b.classList.remove('on'));
-      btn.classList.add('on');
-      renderMapDetail(btn.dataset.no, areaMatMap);
-    };
-  });
+  nav.innerHTML=h;
+  nav.querySelectorAll('.region-btn').forEach(b=>{b.onclick=()=>{nav.querySelectorAll('.region-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderMapDetail(b.dataset.no);};});
 }
-
-function renderMapDetail(no, areaMatMap) {
-  const detail = document.getElementById('map-detail');
-  if(!areaMatMap) {
-    areaMatMap = {};
-    MAT.forEach(m=>{
-      if(!m.location)return;
-      m.location.split(',').map(s=>s.trim()).forEach(loc=>{
-        if(!areaMatMap[loc])areaMatMap[loc]=[];
-        if(!areaMatMap[loc].find(x=>x.id===m.id)) areaMatMap[loc].push(m);
-      });
-    });
-  }
-  const area = AREAS[no];
-  const mats = areaMatMap[no]||[];
-  const connects = getConnects(no);
-
-  // 연결 슬롯 렌더 (방향당 최대 2개)
-  const connectSlots = DIRS.map(d=>{
-    const list = connects[d.key]||[];
-    const slots = [];
-    // 기존 연결들
-    list.forEach(cno=>{
-      const carea = AREAS[cno];
-      if(!carea) return;
-      slots.push(`<div class="connect-slot filled" style="margin-bottom:5px">
-        <button class="connect-del" data-dir="${d.key}" data-mapno="${no}" data-target="${cno}">×</button>
-        <div class="connect-dir">${d.label}</div>
-        <div class="connect-name">${cno}. ${carea.name}</div>
-      </div>`);
-    });
-    // 추가 슬롯 (최대 2개)
-    if(list.length < 2) {
-      slots.push(`<div class="connect-slot empty" data-dir="${d.key}" data-no="${no}">
-        <div class="connect-dir">${d.label}</div>
-        <div class="connect-add">+</div>
-      </div>`);
-    }
-    return `<div style="display:flex;flex-direction:column">${slots.join('')}</div>`;
+function renderMapDetail(no){
+  const detail=document.getElementById('map-detail');
+  const amap={};
+  MAT.forEach(m=>{if(!m.location)return;m.location.split(',').map(s=>s.trim()).forEach(l=>{if(!amap[l])amap[l]=[];if(!amap[l].find(x=>x.id===m.id))amap[l].push(m);});});
+  const area=AREAS[no];const mats=amap[no]||[];const conn=getConnects(no);
+  const slots=DIRS.map(d=>{
+    const list=conn[d.key]||[];const s=[];
+    list.forEach(cno=>{const ca=AREAS[cno];if(!ca)return;s.push(`<div class="connect-slot" data-target="${cno}" style="margin-bottom:5px"><button class="connect-del" data-dir="${d.key}" data-mapno="${no}" data-target="${cno}">×</button><div class="connect-dir">${d.label}</div><div class="connect-name">${cno}. ${ca.name}</div></div>`);});
+    if(list.length<2)s.push(`<div class="connect-slot empty" data-dir="${d.key}" data-addno="${no}"><div class="connect-dir">${d.label}</div><div class="connect-add">+</div></div>`);
+    return `<div>${s.join('')}</div>`;
   }).join('');
-
-  detail.innerHTML = `
-    <div class="map-detail-header">
-      <div class="map-region-name"><span style="opacity:.5;font-size:14px;margin-right:6px">${no}.</span>${area.name}</div>
-      <div style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(200,150,50,.2);color:var(--gold);margin-top:5px">${area.region}</div>
-    </div>
+  detail.innerHTML=`<div class="map-region-name"><span style="opacity:.5;font-size:14px;margin-right:6px">${no}.</span>${area.name}</div>
+    <div style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(200,150,50,.2);color:var(--gold);margin-top:5px">${area.region}</div>
     <div class="map-detail-body">
-      <div class="map-connects-panel">
-        <div class="map-connects-title">🔗 이어지는 맵</div>
-        <div class="connect-grid">${connectSlots}</div>
-      </div>
-      <div>
-        <div style="font-size:11px;color:var(--gold);margin-bottom:10px">🌿 채집 가능 재료 (${mats.length}종)</div>
-        ${mats.length?`<div class="map-mat-grid">
-          ${mats.map(m=>{
-            const src=getImg(m.id);
-            const imgHtml=src
-              ?`<img src="${src}" class="map-mat-thumb" loading="lazy"/>`
-              :`<div class="map-mat-thumb-placeholder">${getEmoji(m)}</div>`;
-            return `<div class="map-mat-item" data-mat="${m.id}">
-              ${imgHtml}
-              <div class="map-mat-name">${m.id}</div>
-              <div class="map-mat-sub">${m.effect}</div>
-            </div>`;
-          }).join('')}
-        </div>`:`<div style="color:rgba(245,234,214,.3);font-size:12px;padding:20px 0">등록된 채집 재료 없음</div>`}
-      </div>
-    </div>`;
-
-  // 빈 슬롯 → 연결 추가
-  detail.querySelectorAll('.connect-slot.empty').forEach(el=>{
-    el.onclick=()=>openConnModal(no, el.dataset.dir);
-  });
-  // 채워진 슬롯 클릭 → 해당 맵으로 이동
-  detail.querySelectorAll('.connect-slot.filled').forEach(el=>{
-    el.onclick=e=>{
-      if(e.target.classList.contains('connect-del')) return;
-      const cno = el.querySelector('.connect-name').textContent.split('.')[0].trim();
-      if(cno && AREAS[cno]) {
-        document.querySelectorAll('.region-btn').forEach(b=>{
-          b.classList.toggle('on', b.dataset.no===String(cno));
-        });
-        renderMapDetail(String(cno), null);
-      }
-    };
-  });
-  // 삭제
-  detail.querySelectorAll('.connect-del').forEach(btn=>{
-    btn.onclick=e=>{
-      e.stopPropagation();
-      const mapno=btn.dataset.mapno, dir=btn.dataset.dir, target=btn.dataset.target;
-      const c = getConnects(mapno);
-      c[dir] = c[dir].filter(n=>n!==target);
-      setConnects(mapno, c);
-      // 반대 방향 자동 해제
-      const oppDir = {north:'south',south:'north',east:'west',west:'east'}[dir];
-      if(AREAS[target]) {
-        const tc = getConnects(target);
-        tc[oppDir] = tc[oppDir].filter(n=>n!==mapno);
-        setConnects(target, tc);
-      }
-      renderMapDetail(mapno, null);
-    };
-  });
+      <div class="map-connects-panel"><div class="map-connects-title">🔗 이어지는 맵</div><div class="connect-grid">${slots}</div></div>
+      <div><div style="font-size:11px;color:var(--gold);margin-bottom:10px">🌿 채집 재료 (${mats.length}종)</div>
+      ${mats.length?`<div class="map-mat-grid">${mats.map(m=>{const src=getImg(m.id);return `<div class="map-mat-item" data-mat="${esc(m.id)}">${src?`<img src="${src}" class="map-mat-thumb"/>`:`<div class="map-mat-thumb-ph">${getEmoji(m)}</div>`}<div class="map-mat-name">${m.id}</div><div class="map-mat-sub">${m.effect}</div></div>`;}).join('')}</div>`:`<div style="color:rgba(245,234,214,.3);font-size:12px;padding:20px 0">재료 없음</div>`}
+      </div></div>`;
+  detail.querySelectorAll('.connect-slot.empty').forEach(el=>{el.onclick=()=>openConnModal(el.dataset.addno,el.dataset.dir);});
+  detail.querySelectorAll('.connect-slot:not(.empty)').forEach(el=>{el.onclick=e=>{if(e.target.classList.contains('connect-del'))return;const t=el.dataset.target;if(AREAS[t]){document.querySelectorAll('.region-btn').forEach(b=>b.classList.toggle('on',b.dataset.no===t));renderMapDetail(t);}};});
+  detail.querySelectorAll('.connect-del').forEach(btn=>{btn.onclick=e=>{e.stopPropagation();const mn=btn.dataset.mapno,dir=btn.dataset.dir,tg=btn.dataset.target;const c=getConnects(mn);c[dir]=c[dir].filter(n=>n!==tg);setConnects(mn,c);const opp={north:'south',south:'north',east:'west',west:'east'}[dir];if(AREAS[tg]){const tc=getConnects(tg);tc[opp]=tc[opp].filter(n=>n!==mn);setConnects(tg,tc);}saveToGitHub();renderMapDetail(mn);};});
   detail.querySelectorAll('.map-mat-item').forEach(el=>el.onclick=()=>showMatModal(el.dataset.mat));
 }
-
-// 연결 편집 모달
-function openConnModal(no, dir) {
-  editConnState = {no, dir};
-  const dirLabel = DIRS.find(d=>d.key===dir)?.label || dir;
-  document.getElementById('conn-modal-title').textContent = `${no}. ${AREAS[no]?.name} — ${dirLabel}쪽 연결 추가`;
-  document.getElementById('conn-search').value = '';
-  renderConnResults('');
-  document.getElementById('conn-modal').classList.add('on');
-}
-function renderConnResults(q) {
-  const res = document.getElementById('conn-results');
-  const items = Object.entries(AREAS)
-    .filter(([n,a])=> !q || n.includes(q) || a.name.includes(q))
-    .sort((a,b)=>+a[0]-+b[0])
-    .slice(0,20);
-  res.innerHTML = items.map(([n,a])=>
-    `<div class="conn-result-item" data-no="${n}">
-      <span class="conn-result-no">${n}</span>${a.name}
-    </div>`).join('');
-  res.querySelectorAll('.conn-result-item').forEach(el=>{
-    el.onclick=()=>{
-      const {no,dir} = editConnState;
-      const c = getConnects(no);
-      if(!c[dir].includes(el.dataset.no) && c[dir].length < 2) {
-        c[dir].push(el.dataset.no);
-        setConnects(no, c);
-        // 반대 방향 자동 연결
-        const oppDir = {north:'south',south:'north',east:'west',west:'east'}[dir];
-        if(AREAS[el.dataset.no]) {
-          const tc = getConnects(el.dataset.no);
-          if(!tc[oppDir].includes(no) && tc[oppDir].length < 2) {
-            tc[oppDir].push(no);
-            setConnects(el.dataset.no, tc);
-          }
-        }
-      }
-      document.getElementById('conn-modal').classList.remove('on');
-      renderMapDetail(no, null);
-    };
-  });
-}
-// 연결 모달
-document.addEventListener('click', e=>{
-  if(e.target.id==='conn-close'||e.target.id==='conn-modal')
-    document.getElementById('conn-modal').classList.remove('on');
-});
-document.addEventListener('input', e=>{
-  if(e.target.id==='conn-search') renderConnResults(e.target.value.trim());
-});
-document.addEventListener('keydown', e=>{
-  if(e.key==='Escape') document.getElementById('conn-modal').classList.remove('on');
-});
-
-
-const STORAGE_KEY = 'maho_mat_edits_v1';
-const GH_USER = 'kadee322';
-const GH_REPO = 'maho-dagam';
-const GH_FILE = 'maho_재료데이터.json';
-const GH_TOKEN_KEY = 'maho_gh_token';
-const GITHUB_JSON = 'https://kadee322.github.io/maho-dagam/maho_재료데이터.json';
-
-function getToken() { return localStorage.getItem(GH_TOKEN_KEY)||''; }
-
-function saveToLocal() {
-  try {
-    const data = {
-      materials: MAT,
-      connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch(e) { console.warn('localStorage 저장 실패', e); }
+let connEdit={no:null,dir:null};
+function openConnModal(no,dir){connEdit={no,dir};const dl=DIRS.find(d=>d.key===dir).label;document.getElementById('conn-modal-title').textContent=`${no}. ${AREAS[no].name} — ${dl}쪽 연결`;document.getElementById('conn-search').value='';renderConnResults('');document.getElementById('conn-modal').classList.add('on');}
+function renderConnResults(q){
+  const res=document.getElementById('conn-results');
+  const items=Object.entries(AREAS).filter(([n,a])=>!q||n.includes(q)||a.name.includes(q)).sort((a,b)=>+a[0]-+b[0]).slice(0,20);
+  res.innerHTML=items.map(([n,a])=>`<div class="conn-result-item" data-no="${n}"><span style="color:var(--gold);min-width:20px">${n}</span>${a.name}</div>`).join('');
+  res.querySelectorAll('.conn-result-item').forEach(el=>{el.onclick=()=>{const{no,dir}=connEdit;const c=getConnects(no);if(!c[dir].includes(el.dataset.no)&&c[dir].length<2){c[dir].push(el.dataset.no);setConnects(no,c);const opp={north:'south',south:'north',east:'west',west:'east'}[dir];if(AREAS[el.dataset.no]){const tc=getConnects(el.dataset.no);if(!tc[opp].includes(no)&&tc[opp].length<2){tc[opp].push(no);setConnects(el.dataset.no,tc);}}saveToGitHub();}document.getElementById('conn-modal').classList.remove('on');renderMapDetail(no);};});
 }
 
-function loadFromLocal() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return false;
-    const parsed = JSON.parse(saved);
-    const matList = Array.isArray(parsed) ? parsed : (parsed.materials || []);
-    matList.forEach(savedM => {
-      const idx = MAT.findIndex(m => m.id === savedM.id);
-      if (idx >= 0) Object.assign(MAT[idx], savedM);
-      else MAT.push(savedM);
-    });
-    if(parsed.connects) {
-      Object.entries(parsed.connects).forEach(([no,c])=>{
-        if(AREAS[no] && c) {
-          const migrated = {};
-          ['north','east','south','west'].forEach(d=>{
-            const v = c[d];
-            if(Array.isArray(v)) migrated[d] = v;
-            else if(v) migrated[d] = [String(v)];
-            else migrated[d] = [];
-          });
-          AREAS[no].connects = migrated;
-        }
-      });
-    }
-    return true;
-  } catch(e) { return false; }
+// 재료
+let matF={q:'',effect:'',sort:'alpha'};
+function renderMats(){
+  const grid=document.getElementById('mat-grid');
+  let list=MAT.filter((m,i,a)=>a.findIndex(x=>x.id===m.id)===i);
+  if(matF.q)list=list.filter(m=>m.id.includes(matF.q)||(m.desc&&m.desc.includes(matF.q))||(m.location&&m.location.includes(matF.q)));
+  if(matF.effect)list=list.filter(m=>m.effect===matF.effect);
+  if(matF.sort==='alpha')list.sort((a,b)=>a.id.localeCompare(b.id,'ko'));
+  if(!list.length){grid.innerHTML='<div class="no-result">검색 결과 없음</div>';return;}
+  grid.innerHTML=list.map((m,i)=>{
+    const src=getImg(m.id);
+    const loc=(m.location||'').split(',').map(s=>s.trim()).filter(Boolean).map(no=>AREAS[no]?no+'. '+AREAS[no].name:no).join(', ');
+    return `<div class="mat-card" data-mat="${esc(m.id)}">
+      <div class="mat-img-wrap"><div class="mat-no">${String(i+1).padStart(3,'0')}</div>${src?`<img src="${src}" class="mat-img"/>`:`<div class="mat-img-placeholder">${getEmoji(m)}</div>`}</div>
+      <div class="mat-card-body"><div class="mat-name">${m.id}</div>
+        <div class="mat-tags"><span class="tag tag-effect-${m.effect}">${m.effect}</span><span class="tag tag-type">${m.type}</span></div>
+        ${loc?`<div class="mat-loc">📍 ${loc}</div>`:''}
+        ${m.hint?`<div class="mat-hint">💡 ${esc(m.hint)}</div>`:''}
+        ${m.desc&&m.desc!=='—'?`<div class="mat-desc">${esc(m.desc)}</div>`:''}
+      </div></div>`;
+  }).join('');
+  grid.querySelectorAll('.mat-card').forEach(el=>el.onclick=()=>showMatModal(el.dataset.mat));
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  if(!t) return;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+// 마법
+let spF={q:'',cat:''};
+function renderSpells(){
+  const grid=document.getElementById('spell-grid');
+  let list=SPELLS;
+  if(spF.q)list=list.filter(s=>s.name.includes(spF.q)||s.effect.includes(spF.q)||s.recipe.some(r=>r[0].includes(spF.q)));
+  if(spF.cat)list=list.filter(s=>s.category===spF.cat);
+  if(!list.length){grid.innerHTML='<div class="no-result">검색 결과 없음</div>';return;}
+  grid.innerHTML=list.map(s=>`<div class="spell-card" data-spell="${esc(s.name)}"><div class="spell-name">${s.name}</div><span class="spell-cat cat-${s.category}">${s.category}</span><div class="spell-effect">${s.effect}</div><div class="recipe-list">${s.recipe.map((r,i)=>`<div class="recipe-item" data-mat="${esc(r[0])}"><div class="recipe-num">${i+1}</div><div class="recipe-mat">${r[0]}</div><div class="recipe-how">${r[1]}</div></div>`).join('')}</div></div>`).join('');
+  grid.querySelectorAll('.spell-card').forEach(el=>el.onclick=()=>showSpellModal(el.dataset.spell));
+  grid.querySelectorAll('.recipe-item').forEach(el=>el.onclick=e=>{e.stopPropagation();showMatModal(el.dataset.mat);});
 }
 
-function exportJSON() {
-  const exportData = {
-    materials: MAT,
-    connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))
-  };
-  const blob = new Blob([JSON.stringify(exportData, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'maho_재료데이터.json';
-  a.click();
-  showToast('💾 데이터 저장 완료!');
+// 모달
+function showMatModal(name){
+  const m=MAT.find(x=>x.id===name);if(!m)return;
+  const src=getImg(name);
+  const spells=SPELLS.filter(s=>s.recipe.some(r=>r[0]===name));
+  const loc=(m.location||'').split(',').map(s=>s.trim()).filter(Boolean).map(no=>AREAS[no]?'📍 '+no+'. '+AREAS[no].name:'📍 '+no).join('<br>');
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-img-frame">${src?`<img src="${src}"/>`:`<div class="ph">${getEmoji(m)}</div>`}</div>
+    <div class="modal-title">${m.id}</div>
+    <div class="modal-sub">${m.type} · ${m.season||''}</div>
+    <div class="modal-tags"><span class="tag tag-effect-${m.effect}">${m.effect}</span><span class="tag tag-type">${m.type}</span></div>
+    ${m.desc&&m.desc!=='—'?`<div class="modal-section"><h4>설명</h4><p>${esc(m.desc)}</p></div>`:''}
+    ${m.hint?`<div class="modal-section"><h4>채집 힌트</h4><p style="color:var(--gold)">💡 ${esc(m.hint)}</p></div>`:''}
+    ${loc?`<div class="modal-section"><h4>채집 장소</h4><p>${loc}</p></div>`:''}
+    ${spells.length?`<div class="divider"></div><div class="modal-section"><h4>사용 마법 (${spells.length})</h4>${spells.map(s=>`<div class="related-item" data-spell="${esc(s.name)}"><span class="spell-cat cat-${s.category}" style="font-size:9px;margin-right:6px">${s.category}</span>${s.name}</div>`).join('')}</div>`:''}
+    <button class="btn-edit" data-edit="${esc(name)}">✏️ 정보 수정</button>`;
+  document.getElementById('modal').classList.add('on');
+  document.querySelectorAll('[data-spell]').forEach(el=>el.onclick=()=>showSpellModal(el.dataset.spell));
+  document.querySelector('[data-edit]').onclick=()=>openEditModal(name);
+}
+function showSpellModal(name){
+  const s=SPELLS.find(x=>x.name===name);if(!s)return;
+  document.getElementById('modal-content').innerHTML=`<div class="modal-title">✨ ${s.name}</div><div class="modal-sub">${s.category} 마법</div><div class="modal-tags"><span class="spell-cat cat-${s.category}">${s.category}</span></div><div class="modal-section"><h4>효과</h4><p>${s.effect}</p></div><div class="divider"></div><div class="modal-section"><h4>조합 레시피</h4><div class="recipe-list" style="margin-top:8px">${s.recipe.map((r,i)=>`<div class="recipe-item" data-mat="${esc(r[0])}"><div class="recipe-num">${i+1}</div><div class="recipe-mat">${r[0]}</div><div class="recipe-how">${r[1]}</div></div>`).join('')}</div></div>`;
+  document.getElementById('modal').classList.add('on');
+  document.querySelectorAll('[data-mat]').forEach(el=>el.onclick=e=>{e.stopPropagation();showMatModal(el.dataset.mat);});
 }
 
-function importJSON(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const raw = JSON.parse(e.target.result);
-      const list = Array.isArray(raw) ? raw : (raw.materials || []);
-      if (!list.length) { showToast('❌ 재료 데이터가 없어요'); return; }
-      list.forEach(savedM => {
-        const idx = MAT.findIndex(m => m.id === savedM.id);
-        if (idx >= 0) Object.assign(MAT[idx], savedM);
-        else MAT.push(savedM);
-      });
-      if(raw.connects) {
-        Object.entries(raw.connects).forEach(([no,c])=>{
-          if(AREAS[no] && c) {
-            const migrated = {};
-            ['north','east','south','west'].forEach(d=>{
-              const v = c[d];
-              if(Array.isArray(v)) migrated[d] = v;
-              else if(v) migrated[d] = [String(v)];
-              else migrated[d] = [];
-            });
-            AREAS[no].connects = migrated;
-          }
-        });
-      }
-      saveToLocal();
-      renderMats(); renderMap();
-      showToast('📂 ' + list.length + '개 재료 데이터 불러오기 완료!');
-    } catch(e) { showToast('❌ 파일 형식 오류'); }
-  };
-  reader.readAsText(file);
+// 수정
+let locSelected=[];
+function openEditModal(id){
+  const m=MAT.find(x=>x.id===id);if(!m)return;
+  document.getElementById('edit-title').textContent=m.id+' 수정';
+  document.getElementById('edit-id').value=id;
+  document.getElementById('edit-name').value=m.id;
+  document.getElementById('edit-type').value=m.type||'';
+  document.getElementById('edit-effect').value=m.effect||'미확인';
+  document.getElementById('edit-location').value='';
+  document.getElementById('edit-season').value=m.season||'';
+  document.getElementById('edit-hint').value=m.hint||'';
+  document.getElementById('edit-desc').value=m.desc||'';
+  locSelected=(m.location||'').split(',').map(s=>s.trim()).filter(s=>s&&AREAS[s]);
+  renderLocTags();
+  document.getElementById('edit-modal').classList.add('on');
+}
+function renderLocTags(){
+  const w=document.getElementById('loc-tags');
+  w.innerHTML=locSelected.map(no=>`<span class="loc-tag" data-no="${no}">${no}. ${AREAS[no]?AREAS[no].name:no}</span>`).join('');
+  w.querySelectorAll('.loc-tag').forEach(el=>el.onclick=()=>{locSelected=locSelected.filter(n=>n!==el.dataset.no);renderLocTags();});
 }
 
-async function saveToGitHub() {
-  const token = getToken();
-  if (!token) { showToast('⚠️ 토큰을 먼저 입력해주세요'); return; }
-  const ghStatus = document.getElementById('gh-status');
-  if(ghStatus) { ghStatus.textContent = '☁️ 저장 중...'; ghStatus.className = 'github-status'; }
-  try {
-    const getRes = await fetch(
-      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
-      { headers: { 'Authorization': 'token ' + token } }
-    );
-    const getJson = await getRes.json();
-    const sha = getJson.sha;
-    const saveData = {
-      materials: MAT,
-      connects: Object.fromEntries(Object.entries(AREAS).map(([no,a])=>[no,a.connects||null]))
-    };
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(saveData, null, 2))));
-    const putRes = await fetch(
-      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: '데이터 업데이트', content, sha })
-      }
-    );
-    if (putRes.ok) {
-      if(ghStatus) { ghStatus.textContent = '☁️'; ghStatus.className = 'github-status ok'; }
-      showToast('☁️ GitHub 저장 완료!');
-    } else { throw new Error(); }
-  } catch(e) {
-    if(ghStatus) { ghStatus.textContent = '❌'; ghStatus.className = 'github-status err'; }
-  }
-}
-
-// 토큰 저장 버튼
-document.addEventListener('click', e => {
-  if (e.target.id === 'gh-save-token') {
-    const t = document.getElementById('gh-token').value.trim();
-    if (!t) return;
-    localStorage.setItem(GH_TOKEN_KEY, t);
-    document.getElementById('gh-input-wrap').style.display='none';
-    document.getElementById('gh-status').textContent = '☁️';
-  }
-  if (e.target.id === 'btn-export') exportJSON();
-  if (e.target.id === 'btn-import') { const fi=document.getElementById('import-file'); if(fi) fi.click(); }
-});
-document.addEventListener('change', e => {
-  if (e.target.id === 'import-file') {
-    if (e.target.files[0]) importJSON(e.target.files[0]);
-    e.target.value = '';
-  }
-});
-window.addEventListener('load', ()=>{
-  if(getToken()) {
-    const iw = document.getElementById('gh-input-wrap');
-    if(iw) iw.style.display='none';
-    const gs = document.getElementById('gh-status');
-    if(gs) gs.textContent = '☁️';
-  }
-  document.getElementById('gh-status').onclick = ()=>{
-    if(getToken()) {
-      const iw = document.getElementById('gh-input-wrap');
-      if(iw) iw.style.display='flex';
-      document.getElementById('gh-status').textContent = '';
-    }
-  };
-});
-
-// 수정 저장
-document.addEventListener('click', e => {
-  if (e.target.id==='edit-save') {
-    const oldId=document.getElementById('edit-id').value;
-    const m=MAT.find(x=>x.id===oldId); if(!m) return;
+// 이벤트
+document.addEventListener('click',e=>{
+  const id=e.target.id;
+  if(id==='modal-close'||id==='modal')document.getElementById('modal').classList.remove('on');
+  if(id==='edit-close'||id==='edit-cancel'||id==='edit-modal')document.getElementById('edit-modal').classList.remove('on');
+  if(id==='conn-close'||id==='conn-modal')document.getElementById('conn-modal').classList.remove('on');
+  if(id==='btn-export')exportJSON();
+  if(id==='btn-import'){const f=document.getElementById('import-file');if(f)f.click();}
+  if(id==='gh-save-token'){const t=document.getElementById('gh-token').value.trim();if(t){localStorage.setItem(GH_TOKEN_KEY,t);document.getElementById('gh-input-wrap').style.display='none';document.getElementById('gh-status').textContent='☁️';}}
+  if(id==='edit-save'){
+    const oid=document.getElementById('edit-id').value;const m=MAT.find(x=>x.id===oid);if(!m)return;
     m.id=document.getElementById('edit-name').value.trim()||m.id;
     m.type=document.getElementById('edit-type').value;
     m.effect=document.getElementById('edit-effect').value;
@@ -858,138 +433,48 @@ document.addEventListener('click', e => {
     m.desc=document.getElementById('edit-desc').value.trim();
     document.getElementById('edit-modal').classList.remove('on');
     document.getElementById('modal').classList.remove('on');
-    saveToLocal();
-    saveToGitHub();
-    showToast('✅ 저장됨');
-    renderMats(); renderMap();
-    setTimeout(()=>showMatModal(m.id), 100);
+    saveData();saveToGitHub();showToast('✅ 저장됨');renderMats();renderMap();
+    setTimeout(()=>showMatModal(m.id),100);
   }
-  if (e.target.id==='edit-close'||e.target.id==='edit-cancel')
-    document.getElementById('edit-modal').classList.remove('on');
-  if (e.target.id==='edit-modal')
-    document.getElementById('edit-modal').classList.remove('on');
-  if (e.target.id==='modal-close') document.getElementById('modal').classList.remove('on');
-  if (e.target.id==='modal') document.getElementById('modal').classList.remove('on');
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='mat-effect-sel'){matF.effect=e.target.value;renderMats();}
+  if(e.target.id==='mat-sort-sel'){matF.sort=e.target.value;renderMats();}
+  if(e.target.id==='spell-cat-sel'){spF.cat=e.target.value;renderSpells();}
+  if(e.target.id==='import-file'){if(e.target.files[0])importJSON(e.target.files[0]);e.target.value='';}
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='mat-search'){matF.q=e.target.value.trim();renderMats();}
+  if(e.target.id==='spell-search'){spF.q=e.target.value.trim();renderSpells();}
+  if(e.target.id==='conn-search')renderConnResults(e.target.value.trim());
+  if(e.target.id==='edit-location'){
+    const q=e.target.value.trim();const dd=document.getElementById('loc-dropdown');
+    if(!q){dd.style.display='none';return;}
+    const rs=Object.entries(AREAS).filter(([n,a])=>n.includes(q)||a.name.includes(q)).slice(0,8);
+    if(!rs.length){dd.style.display='none';return;}
+    dd.innerHTML=rs.map(([n,a])=>`<div class="conn-result-item" data-locno="${n}"><span style="color:var(--gold);min-width:20px">${n}</span>${a.name}</div>`).join('');
+    dd.style.display='block';
+    dd.querySelectorAll('[data-locno]').forEach(el=>el.onclick=()=>{const no=el.dataset.locno;if(!locSelected.includes(no))locSelected.push(no);document.getElementById('edit-location').value='';dd.style.display='none';renderLocTags();});
+  }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('modal').classList.remove('on');document.getElementById('edit-modal').classList.remove('on');document.getElementById('conn-modal').classList.remove('on');}});
+
+// 초기화
+window.addEventListener('load',()=>{
+  if(getToken()){document.getElementById('gh-input-wrap').style.display='none';document.getElementById('gh-status').textContent='☁️';}
+  document.getElementById('gh-status').onclick=()=>{if(getToken()){document.getElementById('gh-input-wrap').style.display='flex';document.getElementById('gh-status').textContent='';}};
 });
 
-
-// 시작시 로컬 데이터 로드
-const hadSaved = loadFromLocal();
-loadAreaConnects();
-
-// GitHub JSON 자동 로드 후 렌더링
-async function initLoad() {
-  try {
-    const res = await fetch(GITHUB_JSON + '?t=' + Date.now());
-    if (res.ok) {
-      const raw = await res.json();
-      const data = Array.isArray(raw) ? raw : (raw.materials || []);
-      if (data.length) {
-        data.forEach(savedM => {
-          const idx = MAT.findIndex(m => m.id === savedM.id);
-          if (idx >= 0) Object.assign(MAT[idx], savedM);
-          else MAT.push(savedM);
-        });
-        if(raw.connects) {
-          Object.entries(raw.connects).forEach(([no,c])=>{
-            if(AREAS[no] && c) {
-              const migrated = {};
-              ['north','east','south','west'].forEach(d=>{
-                const v = c[d];
-                if(Array.isArray(v)) migrated[d] = v;
-                else if(v) migrated[d] = [String(v)];
-                else migrated[d] = [];
-              });
-              AREAS[no].connects = migrated;
-            }
-          });
-        }
-        saveToLocal();
-        showToast('☁️ GitHub 데이터 로드 완료!');
-      } else if (hadSaved) {
-        showToast('✅ 저장된 데이터 불러옴');
-      }
-    } else if (hadSaved) {
-      showToast('✅ 저장된 데이터 불러옴');
-    }
-  } catch(e) {
-    if (hadSaved) showToast('✅ 저장된 데이터 불러옴');
-  }
+async function init(){
+  const hadLocal=loadData();
+  try{
+    const res=await fetch(GITHUB_JSON+'?t='+Date.now());
+    if(res.ok){const raw=await res.json();applyData(raw);saveData();showToast('☁️ GitHub 로드 완료!');}
+    else if(hadLocal)showToast('✅ 저장 데이터 로드');
+  }catch(e){if(hadLocal)showToast('✅ 저장 데이터 로드');}
   renderMap();renderMats();renderSpells();
 }
-initLoad();
+init();
 </script>
-
-<div class="edit-modal-overlay" id="edit-modal">
-  <div class="edit-box">
-    <button class="modal-close" id="edit-close" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer;">×</button>
-    <h3 id="edit-title">재료 수정</h3>
-    <input type="hidden" id="edit-id"/>
-    <div class="edit-field">
-      <label>재료명</label>
-      <input type="text" id="edit-name"/>
-    </div>
-    <div class="edit-field">
-      <label>종류</label>
-      <select id="edit-type" style="width:100%;background:var(--parch2);border:1px solid var(--parch3);color:var(--ink);padding:8px 10px;border-radius:2px;font-family:inherit;font-size:13px;outline:none;appearance:none;cursor:pointer;">
-        <option value="">선택</option>
-        <option value="광물">광물</option>
-        <option value="꽃">꽃</option>
-        <option value="나무 열매">나무 열매</option>
-        <option value="동물">동물</option>
-        <option value="버섯">버섯</option>
-        <option value="약초">약초</option>
-        <option value="미분류">미분류</option>
-      </select>
-    </div>
-    <div class="edit-field">
-      <label>효과</label>
-      <select id="edit-effect">
-        <option value="물리안정">물리안정</option>
-        <option value="정신안정">정신안정</option>
-        <option value="변이혼돈">변이혼돈</option>
-        <option value="강화조장">강화조장</option>
-        <option value="중화안정">중화안정</option>
-        <option value="환각">환각</option>
-        <option value="미확인">미확인</option>
-      </select>
-    </div>
-    <div class="edit-field">
-      <label>채집 장소 (번호 또는 이름으로 검색, 여러 곳은 쉼표로 구분)</label>
-      <div style="position:relative">
-        <input type="text" id="edit-location" placeholder="예: 9, 13 또는 꽃과 버섯" autocomplete="off"/>
-        <div id="loc-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:10;
-          background:var(--parch);border:1px solid var(--gold);border-top:none;max-height:180px;overflow-y:auto;"></div>
-      </div>
-      <div id="loc-tags" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;"></div>
-    </div>
-    <div class="edit-field">
-      <label>계절</label>
-      <input type="text" id="edit-season"/>
-    </div>
-    <div class="edit-field">
-      <label>채집 힌트</label>
-      <input type="text" id="edit-hint" placeholder="예: 바위 틈 주의, 밤에만 출현"/>
-    </div>
-    <div class="edit-field">
-      <label>설명</label>
-      <textarea id="edit-desc"></textarea>
-    </div>
-    <div class="edit-btns">
-      <button class="edit-cancel" id="edit-cancel">취소</button>
-      <button class="edit-save" id="edit-save">저장</button>
-    </div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-
-<div class="conn-modal-overlay" id="conn-modal">
-  <div class="conn-box">
-    <button class="modal-close" id="conn-close" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer;">×</button>
-    <h3 id="conn-modal-title">연결 맵 설정</h3>
-    <input class="conn-search" id="conn-search" placeholder="번호 또는 이름으로 검색…"/>
-    <div class="conn-results" id="conn-results"></div>
-  </div>
-</div>
 </body>
 </html>
