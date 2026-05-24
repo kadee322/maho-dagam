@@ -74,6 +74,12 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 .connect-del{position:absolute;top:4px;right:5px;font-size:11px;color:var(--dim);background:none;border:none;cursor:pointer;line-height:1}
 .connect-del:hover{color:var(--red)}
 .map-mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
+.map-modal-split{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+.map-modal-split>#map-detail{min-width:0}
+.map-mat-detail{border-left:1px solid rgba(120,80,20,.2);padding-left:18px;min-height:300px;align-self:stretch}
+.map-mat-detail-empty{color:var(--ink3);opacity:.5;font-size:12px;text-align:center;padding:60px 10px;line-height:1.6}
+#map-detail .map-mat-item.sel{background:rgba(200,150,50,.25);border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+@media(max-width:768px){.map-modal-split{grid-template-columns:1fr}.map-mat-detail{border-left:none;border-top:1px solid rgba(120,80,20,.2);padding-left:0;padding-top:16px;min-height:0}}
 .map-mat-item{background:rgba(245,234,214,.07);border:1px solid rgba(200,150,50,.14);border-radius:2px;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
 .map-mat-item:hover{background:rgba(245,234,214,.13);border-color:var(--gold)}
 .map-mat-thumb{width:52px;height:52px;object-fit:contain;background:rgba(245,234,214,.1);image-rendering:pixelated}
@@ -92,6 +98,12 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 #map-modal .map-mat-sub{color:var(--ink3)}
 #map-modal .map-mat-thumb,#map-modal .map-mat-thumb-ph{background:var(--parch2)}
 #map-modal .map-connects-title{color:var(--ink3)}
+#map-mat-detail .modal-title{color:var(--ink)}
+#map-mat-detail .modal-sub{color:var(--ink3)}
+#map-mat-detail .modal-section h4{color:var(--ink3)}
+#map-mat-detail .modal-section p{color:var(--ink2)}
+#map-mat-detail .related-item{color:var(--ink)}
+#map-mat-detail .modal-img-frame{background:var(--parch2)}
 #map-modal .map-detail-body>div>div:first-child{color:var(--ink3)!important}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.on{display:flex}
@@ -1592,7 +1604,7 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
     <div class="modal-section"><h4>채집 장소</h4><p>📍 23. 산림, 작은 집</p></div>
     <div class="divider"></div><div class="modal-section"><h4>사용 마법 (2)</h4><div class="related-item" data-spell="도시락의 창조"><span class="spell-cat cat-창조" style="font-size:9px;margin-right:6px">창조</span>도시락의 창조</div><div class="related-item" data-spell="호박이 되는 마법"><span class="spell-cat cat-자연변화" style="font-size:9px;margin-right:6px">자연변화</span>호박이 되는 마법</div></div>
     <button class="btn-edit" data-edit="브로네세아맘">✏️ 정보 수정</button></div></div></div>
-<div class="modal-overlay" id="map-modal"><div class="modal-box" style="max-width:620px"><button class="modal-close" id="map-modal-close">×</button><div id="map-detail"></div></div></div>
+<div class="modal-overlay" id="map-modal"><div class="modal-box" style="max-width:920px"><button class="modal-close" id="map-modal-close">×</button><div class="map-modal-split"><div id="map-detail"></div><div id="map-mat-detail" class="map-mat-detail"><div class="map-mat-detail-empty">← 채집 재료를 클릭하면<br>여기에 상세가 표시됩니다</div></div></div></div></div>
 <div class="modal-overlay" id="edit-modal"><div class="modal-box" style="max-width:440px"><button class="modal-close" id="edit-close">×</button>
   <h3 id="edit-title" style="font-size:15px;font-weight:700;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--parch3)">브로네세아맘 수정</h3>
   <input type="hidden" id="edit-id" value="브로네세아맘">
@@ -1772,6 +1784,8 @@ function renderMapGrid(){
 }
 function openMapModal(no){
   renderMapDetail(no);
+  const panel=document.getElementById('map-mat-detail');
+  if(panel)panel.innerHTML='<div class="map-mat-detail-empty">← 채집 재료를 클릭하면<br>여기에 상세가 표시됩니다</div>';
   document.getElementById('map-modal').classList.add('on');
 }
 
@@ -1799,7 +1813,19 @@ function renderMapDetail(no){
   detail.querySelectorAll('.connect-slot.empty').forEach(el=>{el.onclick=()=>openConnModal(el.dataset.addno,el.dataset.dir);});
   detail.querySelectorAll('.connect-slot:not(.empty)').forEach(el=>{el.onclick=e=>{if(e.target.classList.contains('connect-del'))return;const t=el.dataset.target;if(AREAS[t]){renderMapDetail(t);}};});
   detail.querySelectorAll('.connect-del').forEach(btn=>{btn.onclick=e=>{e.stopPropagation();const mn=btn.dataset.mapno,dir=btn.dataset.dir,tg=btn.dataset.target;const c=getConnects(mn);c[dir]=c[dir].filter(n=>n!==tg);setConnects(mn,c);const opp={north:'south',south:'north',east:'west',west:'east'}[dir];if(AREAS[tg]){const tc=getConnects(tg);tc[opp]=tc[opp].filter(n=>n!==mn);setConnects(tg,tc);}saveToGitHub();renderMapDetail(mn);};});
-  detail.querySelectorAll('.map-mat-item').forEach(el=>el.onclick=()=>showMatModal(el.dataset.mat));
+  detail.querySelectorAll('.map-mat-item').forEach(el=>el.onclick=()=>showMatInPanel(el.dataset.mat));
+  const panel=document.getElementById('map-mat-detail');
+  if(panel)panel.innerHTML='<div class="map-mat-detail-empty">← 채집 재료를 클릭하면<br>여기에 상세가 표시됩니다</div>';
+}
+function showMatInPanel(name){
+  const panel=document.getElementById('map-mat-detail');
+  if(!panel)return;
+  panel.innerHTML=matDetailHTML(name);
+  // 선택 표시
+  document.querySelectorAll('#map-detail .map-mat-item').forEach(el=>el.classList.toggle('sel',el.dataset.mat===name));
+  // 패널 내 사용마법 클릭 -> 별도 마법 모달, 수정 버튼 -> 편집
+  panel.querySelectorAll('[data-spell]').forEach(el=>el.onclick=()=>showSpellModal(el.dataset.spell));
+  const eb=panel.querySelector('[data-edit]');if(eb)eb.onclick=()=>openEditModal(name);
 }
 let connEdit={no:null,dir:null};
 function openConnModal(no,dir){connEdit={no,dir};const dl=DIRS.find(d=>d.key===dir).label;document.getElementById('conn-modal-title').textContent=`${no}. ${AREAS[no].name} — ${dl}쪽 연결`;document.getElementById('conn-search').value='';renderConnResults('');document.getElementById('conn-modal').classList.add('on');}
@@ -1869,12 +1895,12 @@ function renderSpells(){
 }
 
 // 모달
-function showMatModal(name){
-  const m=MAT.find(x=>x.id===name);if(!m)return;
+function matDetailHTML(name){
+  const m=MAT.find(x=>x.id===name);if(!m)return '';
   const src=getImg(name);
   const spells=SPELLS.filter(s=>s.recipe.some(r=>r[0]===name));
   const loc=(m.location||'').split(',').map(s=>s.trim()).filter(Boolean).map(no=>AREAS[no]?'📍 '+no+'. '+AREAS[no].name:'📍 '+no).join('<br>');
-  document.getElementById('modal-content').innerHTML=`
+  return `
     <div class="modal-img-frame">${src?`<img src="${src}"/>`:`<div class="ph">${getEmoji(m)}</div>`}</div>
     <div class="modal-title">${m.id}</div>
     <div class="modal-sub">${m.type}${m.season?` · <span class="modal-season">${renderSeason(m.season)}</span>`:''}</div>
@@ -1884,6 +1910,10 @@ function showMatModal(name){
     ${loc?`<div class="modal-section"><h4>채집 장소</h4><p>${loc}</p></div>`:''}
     ${spells.length?`<div class="divider"></div><div class="modal-section"><h4>사용 마법 (${spells.length})</h4>${spells.map(s=>`<div class="related-item" data-spell="${esc(s.name)}"><span class="spell-cat cat-${s.category}" style="font-size:9px;margin-right:6px">${s.category}</span>${s.name}</div>`).join('')}</div>`:''}
     <button class="btn-edit" data-edit="${esc(name)}">✏️ 정보 수정</button>`;
+}
+function showMatModal(name){
+  const m=MAT.find(x=>x.id===name);if(!m)return;
+  document.getElementById('modal-content').innerHTML=matDetailHTML(name);
   document.getElementById('modal').classList.add('on');
   document.querySelectorAll('[data-spell]').forEach(el=>el.onclick=()=>showSpellModal(el.dataset.spell));
   document.querySelector('[data-edit]').onclick=()=>openEditModal(name);
