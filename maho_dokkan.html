@@ -349,6 +349,9 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
       <select class="sel" id="mat-type-sel">
         <option value="">종류 전체</option><option value="광물">광물</option><option value="꽃">꽃</option><option value="나무 열매">나무 열매</option><option value="동물">동물</option><option value="버섯">버섯</option><option value="약초">약초</option><option value="미분류">미분류</option>
       </select>
+      <select class="sel" id="mat-season-sel">
+        <option value="">계절 전체</option><option value="연중">연중</option><option value="땅">땅</option><option value="불">불</option><option value="풍">풍</option><option value="물">물</option><option value="황">황</option>
+      </select>
       <select class="sel" id="mat-sort-sel">
         <option value="alpha">가나다순</option><option value="idx">번호순</option>
       </select>
@@ -1808,13 +1811,17 @@ function renderConnResults(q){
 }
 
 // 재료
-let matF={q:'',effect:'',type:'',sort:'alpha'};
+let matF={q:'',effect:'',type:'',season:'',sort:'alpha'};
 function renderMats(){
   const grid=document.getElementById('mat-grid');
   let list=MAT.filter((m,i,a)=>a.findIndex(x=>x.id===m.id)===i);
   if(matF.q)list=list.filter(m=>m.id.includes(matF.q)||(m.desc&&m.desc.includes(matF.q))||(m.location&&m.location.includes(matF.q)));
   if(matF.effect)list=list.filter(m=>m.effect===matF.effect);
   if(matF.type)list=list.filter(m=>m.type===matF.type);
+  if(matF.season){
+    if(matF.season==='연중')list=list.filter(m=>(m.season||'').trim()==='연중');
+    else list=list.filter(m=>{const s=(m.season||'').trim();return s!=='연중'&&s.split(',').map(x=>x.trim()).includes(matF.season);});
+  }
   if(matF.sort==='alpha')list.sort((a,b)=>a.id.localeCompare(b.id,'ko'));
   if(!list.length){grid.innerHTML='<div class="no-result">검색 결과 없음</div>';return;}
   grid.innerHTML=list.map((m,i)=>{
@@ -1938,6 +1945,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{
   if(e.target.id==='mat-effect-sel'){matF.effect=e.target.value;renderMats();}
   if(e.target.id==='mat-type-sel'){matF.type=e.target.value;renderMats();}
+  if(e.target.id==='mat-season-sel'){matF.season=e.target.value;renderMats();}
   if(e.target.id==='mat-sort-sel'){matF.sort=e.target.value;renderMats();}
   if(e.target.id==='spell-cat-sel'){spF.cat=e.target.value;renderSpells();}
   if(e.target.id==='spell-sort-sel'){spF.sort=e.target.value;renderSpells();}
