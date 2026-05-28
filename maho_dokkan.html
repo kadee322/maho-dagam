@@ -21,13 +21,13 @@ main{padding:24px 20px 60px;max-width:1400px;margin:0 auto}
 .lib-shelf{margin-bottom:22px}
 .lib-shelf-header{font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--gold3);padding:9px 14px;border-radius:4px;border-left:4px solid var(--gold2);background:rgba(120,80,20,.18);margin-bottom:10px}
 .lib-shelf-cnt{font-size:11px;color:var(--gold);font-weight:400;margin-left:8px}
-.lib-books{display:flex;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:10px}
+.lib-books{display:flex;flex-direction:row;flex-wrap:wrap;align-items:stretch;gap:10px}
 /* 책: 세로제목 박스 + 오른쪽 가로 펼침 */
-.lib-book{align-self:flex-start;max-width:100%;background:var(--parch);border-radius:3px;box-shadow:0 3px 12px var(--shadow),inset 0 0 0 1px rgba(200,150,50,.3);overflow:hidden;display:flex;align-items:stretch}
-.lib-book-head{flex:0 0 auto;display:flex;align-items:center;justify-content:center;min-width:48px;padding:16px 12px;cursor:pointer;user-select:none;background:var(--parch2);transition:background .15s}
+.lib-book{max-width:100%;background:var(--parch);border-radius:3px;box-shadow:0 3px 12px var(--shadow),inset 0 0 0 1px rgba(200,150,50,.3);overflow:hidden;display:flex;align-items:stretch}
+.lib-book-head{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:50px;height:100%;padding:16px 0;box-sizing:border-box;cursor:pointer;user-select:none;background:var(--parch2);transition:background .15s}
 .lib-book-head:hover{background:var(--parch3)}
 .lib-book.open .lib-book-head{background:var(--parch3)}
-.lib-book-title{writing-mode:vertical-rl;font-size:15px;font-weight:700;color:var(--ink);letter-spacing:.14em;line-height:1.5;white-space:nowrap}
+.lib-book-title{writing-mode:vertical-rl;font-size:15px;font-weight:700;color:var(--ink);letter-spacing:.1em;line-height:1.5;white-space:nowrap}
 .lib-book-body{flex:0 0 auto;width:0;overflow:hidden;transition:width .42s cubic-bezier(.4,0,.2,1)}
 .lib-book.open .lib-book-body{width:min(560px,74vw)}
 .lib-book-inner{width:min(560px,74vw);box-sizing:border-box;padding:15px 18px;border-left:1px solid var(--parch3)}
@@ -1984,6 +1984,7 @@ function renderLibrary(){
   let html='';
   shelfOrder.forEach(sh=>{
     const books=byShelf[sh];if(!books||!books.length)return;
+    books.sort((a,b)=>(a.name||'').localeCompare(b.name||'','ko'));
     html+=`<div class="lib-shelf"><div class="lib-shelf-header">📚 ${esc(sh)}<span class="lib-shelf-cnt">${books.length}권</span></div><div class="lib-books">`;
     books.forEach(b=>{
       const spells=libSpellsHtml(b);
@@ -2007,7 +2008,26 @@ function renderLibrary(){
     book.classList.toggle('open',willOpen);
   };});
   wrap.querySelectorAll('[data-spell]').forEach(el=>el.onclick=()=>showSpellModal(el.dataset.spell));
+  equalizeBookHeights();
 }
+function equalizeBookHeights(){
+  const wrap=document.getElementById('library-wrap');
+  if(!wrap)return;
+  const run=()=>{
+    const books=[...wrap.querySelectorAll('.lib-book')];
+    if(!books.length)return;
+    books.forEach(b=>b.style.minHeight='');           // 초기화 후 자연 높이 측정
+    let max=0;
+    books.forEach(b=>{
+      if(b.classList.contains('open'))return;         // 펼친 책은 body 때문에 크므로 제외
+      const h=b.offsetHeight;                          // 닫힌 카드 실제 높이
+      if(h>max)max=h;
+    });
+    if(max>0)books.forEach(b=>{b.style.minHeight=max+'px';});  // 전체 책 그 높이로 통일
+  };
+  requestAnimationFrame(()=>requestAnimationFrame(run));
+}
+window.addEventListener('resize',()=>{if(document.getElementById('page-library')?.classList.contains('on'))equalizeBookHeights();});
 
 // 수정
 let locSelected=[];
